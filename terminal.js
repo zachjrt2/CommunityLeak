@@ -71,7 +71,7 @@ const gameState = {
     }
 };
 
-let fileSystem = {};
+
 
 // Load filesystem - embedded data
 async function loadFileSystem() {
