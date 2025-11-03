@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIA Development Terminal v2.4.1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.98; }
+            15% { opacity: 0.96; }
+            20% { opacity: 0.97; }
+            100% { opacity: 0.97; }
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* CRT Effects */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 0, 0.03) 0px,
+                transparent 1px,
+                transparent 2px,
+                rgba(0, 255, 0, 0.03) 3px
+            );
+            animation: flicker 0.15s infinite;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(
+                transparent 0%,
+                rgba(0, 255, 0, 0.1) 50%,
+                transparent 100%
+            );
+            pointer-events: none;
+            z-index: 999;
+            animation: scanline 8s linear infinite;
+        }
+
+        .screen-curve {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 998;
+            box-shadow: inset 0 0 100px rgba(0, 255, 0, 0.1);
+            border-radius: 2%;
+        }
+
+        #terminal {
+            padding: 30px;
+            height: 100vh;
+            overflow-y: auto;
+            text-shadow: 0 0 5px #00ff00;
+            position: relative;
+            z-index: 1;
+        }
+
+        .prompt {
+            color: #00ff00;
+            margin-top: 15px;
+        }
+
+        .prompt::before {
+            content: "root@aia-dev:~$ ";
+            color: #00aa00;
+        }
+
+        .output {
+            margin: 10px 0;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .error {
+            color: #ff3333;
+        }
+
+        .warning {
+            color: #ffaa00;
+        }
+
+        .success {
+            color: #00ffaa;
+        }
+
+        .header {
+            color: #00aa00;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+            width: calc(100% - 200px);
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .file-entry {
+            cursor: pointer;
+            padding: 2px 0;
+            transition: all 0.1s;
+        }
+
+        .file-entry:hover {
+            background: rgba(0, 255, 0, 0.1);
+            padding-left: 10px;
+        }
+
+        .folder {
+            color: #00aaff;
+        }
+
+        .executable {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .locked {
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        .hidden-hint {
+            color: #001100;
+            user-select: none;
+        }
+
+        #input-line {
+            display: flex;
+            margin-top: 15px;
+        }
+
+        .boot-sequence {
+            color: #00aa00;
+        }
+
+        /* Glitch effect for special text */
+        .glitch {
+            animation: glitch 1s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    <div class="scanline"></div>
+    <div class="screen-curve"></div>
+    
+    <div id="terminal">
+        <div class="output boot-sequence">
+═══════════════════════════════════════════════════════════
+    AIA DEVELOPMENT ENVIRONMENT - TERMINAL v2.4.1
+    Last Login: [CORRUPTED] from [UNKNOWN]
+═══════════════════════════════════════════════════════════
+
+Initializing workspace...
+Loading project files...
+Mounting /dev/creativity...
+Starting daemon processes...
+
+<span class="warning">WARNING: Unusual activity detected in project memory</span>
+<span class="warning">WARNING: Cross-project memory leaks found</span>
+<span class="success">System ready. Type 'help' for available commands.</span>
+
+<!-- The key to understanding lies in the spaces between projects -->
+<!-- When energy flows between worlds, patterns emerge: 4D 41 4E 41 -->
+        </div>
+        
+        <div id="output-container"></div>
+        <div id="input-line">
+            <span class="prompt"></span>
+            <input type="text" id="command-input" autofocus>
+            <span class="cursor">█</span>
+        </div>
+    </div>
+
+    <script>
+        // Session Management
+        const sessionId = 'S' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+        let solvedPuzzles = [];
+        let unlockedCommands = ['help', 'ls', 'cat', 'clear'];
+        let discoveredSecrets = [];
+
+        // Game State
+        const gameState = {
+            currentDir: '~',
+            terminalUnlocked: false,
+            projects: {
+                'mana_valley': {
+                    locked: false,
+                    solved: false,
+                    files: ['concept.txt', 'design_doc.md', 'energy_system.log', '.hidden_notes']
+                },
+                'burger_riot': {
+                    locked: true,
+                    solved: false,
+                    files: ['playtest_report.txt', 'bug_log.dat', 'timestamp_analysis.csv']
+                },
+                'indie_dev_500': {
+                    locked: true,
+                    solved: false,
+                    files: ['dev_journal.enc', 'decrypt_tool.sh', 'README.txt']
+                },
+                'archive': {
+                    locked: true,
+                    solved: false,
+                    files: ['old_projects.db', 'legacy_code.tar.gz']
+                }
+            }
+        };
+
+        // File Contents
+        const fileSystem = {
+            'mana_valley/concept.txt': `
+MANA VALLEY - Core Concept Document
+====================================
+Date: 2023-04-15
+Status: ACTIVE DEVELOPMENT
+
+Core Mechanic: Resource management meets exploration
+Theme: Energy as a living, flowing entity
+
+The player must balance:
+- Mana collection (primary resource)
+- Valley expansion (territory control)  
+- Entity relationships (diplomacy/combat)
+
+DESIGN PILLARS:
+1. Flow - Energy should feel alive
+2. Choice - Multiple paths to victory
+3. Consequence - Actions ripple through the valley
+
+Color Palette Research:
+Primary: #4D414E (Deep Purple)
+Secondary: #416E4D (Forest Green)
+Accent: #4E4D41 (Earthen Brown)
+Highlight: #41454E (Storm Blue)
+
+Notes: The hex values aren't just colors...
+`,
+            'mana_valley/design_doc.md': `
+# Mana Valley Design Document
+
+## Energy System Architecture
+
+\`\`\`
+Energy Flow Model:
+Source -> Conduit -> Storage -> Application
+
+Energy Types:
+- Raw Mana (harvested)
+- Refined Mana (processed)
+- Corrupted Mana (unstable)
+\`\`\`
+
+## World Building
+
+The valley exists in multiple states simultaneously.
+Players experience different "frequencies" of reality.
+
+Frequency Codes (for debug):
+- F1: Physical realm
+- F2: Energy realm  
+- F3: ???
+
+Internal dev note: Check commit SHA 5f3759df for frequency shader code
+`,
+            'mana_valley/energy_system.log': `
+[2023-04-15 14:23:11] Energy flow initialized
+[2023-04-15 14:23:12] Mana pools spawned: 12
+[2023-04-15 14:23:45] Player collected mana: +50 units
+[2023-04-15 14:24:03] Conversion rate: 1.0 -> 1.2 (BOOSTED)
+[2023-04-15 14:24:30] Mana overflow detected
+[2023-04-15 14:24:31] Emergency containment: ACTIVE
+[2023-04-15 14:24:35] System stabilized
+
+[ERROR] Unusual pattern in collection sequence:
+Positions: (4,13), (1,14), (14,1), (1,14)
+Cross-reference with hex color values in concept doc?
+
+[2023-04-15 14:25:00] Session ended normally
+`,
+            'mana_valley/.hidden_notes': `
+Dev Notes (Personal - DO NOT COMMIT)
+====================================
+
+The mana system is more than a game mechanic.
+It's about FLOW. It's about CONNECTION.
+
+When I look at the energy patterns, I see something:
+The way mana moves between pools... it's not random.
+
+It's like the game is trying to tell us something.
+
+Hex values from concept art -> ASCII chars:
+4D 41 4E 41 = M A N A
+41 4E 53 57 45 52 = ?
+
+The answer is in the energy flow coordinates.
+Grid position (row, col) from energy_system.log...
+
+This is crazy. I'm seeing patterns that shouldn't exist.
+But what if they're real?
+
+Verification code for terminal access: FLOW_STATE_ALPHA
+`,
+            'burger_riot/playtest_report.txt': `
+BURGER RIOT - Playtesting Session #47
+=====================================
+Date: 2023-06-22
+Build: v0.8.3-alpha
+
+PLAYTESTER: Mike K.
+Session Duration: 23 minutes
+
+Timestamp Log:
+00:00 - Game start, tutorial skipped
+00:15 - First burger assembled
+00:43 - Customer #1 satisfied
+01:12 - Speed boost activated
+01:58 - "Riot mode" triggered (chaos event)
+02:34 - Multi-order juggling (3 simultaneous)
+03:11 - First failure (burnt burger)
+03:45 - Recovery, back to normal speed
+04:23 - High score achieved: 1,250 points
+
+BUGS FOUND:
+- Burger sometimes clips through counter
+- Sound effect delay on "perfect" orders
+- Riot mode difficulty spike too harsh
+
+NOTES:
+Mike mentioned the game has a "rhythm" to it.
+The timestamps feel musical? Need to analyze.
+
+[INTERNAL]: Check riot_trigger_sequence.wav
+Pattern analysis suggests morse-like intervals...
+`,
+            'burger_riot/bug_log.dat': `
+BUG DATABASE - BURGER RIOT
+=========================
+
+BUG-001: Physics glitch in burger assembly
+Severity: LOW
+Status: FIXED
+
+BUG-002: Audio desync during riot mode  
+Severity: MEDIUM
+Status: INVESTIGATING
+
+The audio desync is weird. It's like there's a PATTERN:
+Long pause, short pause, short, long, short, long...
+
+Wait, that's not a bug. That's MORSE CODE.
+
+Decoded from riot mode sound gaps:
+... --- ... (SOS? No, wait...)
+
+Actually decoded (using riot mode timestamp intervals):
+- .... --- - (HOT)
+... - --- ...- . (STOVE)
+
+Password for next level: HOTSTOVE? 
+
+BUG-003: Customer AI pathfinding error
+Severity: LOW  
+Status: BACKLOG
+
+[ENCRYPTED SECTION - Use 'decrypt' command with key]
+U2FsdGVkX1+vupppZksvRf5pq5g5XjFRlipRkwB0K1Y=
+`,
+            'burger_riot/timestamp_analysis.csv': `
+Time,Event,Duration,Interval
+00:15,burger_complete,2.3s,-
+00:43,customer_served,1.8s,28s
+01:12,boost_start,0.5s,29s
+01:58,riot_begin,3.1s,46s
+02:34,multi_juggle,2.7s,36s
+03:11,first_fail,1.2s,37s
+03:45,recovery,0.8s,34s
+04:23,high_score,2.1s,38s
+
+Pattern Analysis:
+Intervals between events: 28,29,46,36,37,34,38
+Modulo 26 (for alphabet): 2,3,20,10,11,8,12
+ASCII offset +64: B,C,T,J,K,H,L
+
+Hmm, not quite right. Try different offset?
+What if we use +72? Then: J,K,\,R,S,P,T
+
+Still gibberish. The pattern must be elsewhere...
+Or maybe the DURATION column?
+2.3, 1.8, 0.5, 3.1, 2.7, 1.2, 0.8, 2.1
+Multiplied by 10: 23,18,5,31,27,12,8,21
+Mod 26: 23,18,5,5,1,12,8,21
++65: W,R,E,E,A,L,H,U
+
+Still doesn't make sense. Need more coffee...
+`,
+            'indie_dev_500/README.txt': `
+INDIE DEV 500 - The Journey
+============================
+
+A game about making games.
+500 days of development.
+1 developer.
+Infinite coffee.
+
+This project is a love letter to the indie dev grind.
+Every mechanic represents a real struggle:
+- Resource management = Time & money
+- Random events = Life happening  
+- Tech tree = Learning new skills
+- Boss battles = Crunch time
+
+The game tracks YOUR actual play sessions.
+It knows when you're struggling.
+It adapts.
+
+TO DECRYPT THE DEV JOURNAL:
+1. Find the encryption key (it's hidden in the other projects)
+2. Use the decrypt_tool.sh script
+3. Prepare yourself for the truth
+
+Hint: The key is made of ANSWERS you've already found.
+`,
+            'indie_dev_500/dev_journal.enc': `
+-----BEGIN ENCRYPTED JOURNAL-----
+Day 1-100: [ENCRYPTED]
+U2FsdGVkX19K3vNHGSc4bGAHN2yTpKSqE+vMQhP5rWE=
+
+Day 101-200: [ENCRYPTED]  
+U2FsdGVkX1+2Jz8vK4cX9fYqHbR+pqKsE9kPxHm8Gf0=
+
+Day 201-300: [ENCRYPTED]
+U2FsdGVkX1/Hk9mR4pFx2NbQ+KzPqjRsT8vXnYm3Dc4=
+
+Day 301-400: [ENCRYPTED]
+U2FsdGVkX1+Ym2nT5qGy4OcR+LzQskUtV9wYoZn4Ee8=
+
+Day 401-500: [PARTIALLY READABLE]
+I can't believe I made it. 500 days.
+The game is done. But something happened...
+
+All my projects started... connecting.
+The mana system from Valley.
+The rhythm from Riot.  
+The persistence from Dev500.
+
+They're all the same game.
+They've ALWAYS been the same game.
+
+The core truth: [REQUIRES FULL DECRYPTION]
+
+To unlock this, you need the MASTER_KEY.
+Combine the solutions from:
+- Mana Valley answer
+- Burger Riot password
+- Your session verification code
+
+Format: VALLEY_RIOT_[SESSION_ID]
+-----END ENCRYPTED JOURNAL-----
+`,
+            'indie_dev_500/decrypt_tool.sh': `
+#!/bin/bash
+# Decryption Tool for Dev Journal
+# Usage: ./decrypt_tool.sh <encrypted_file> <key>
+
+decrypt() {
+    local file=$1
+    local key=$2
+    
+    echo "Attempting decryption with key: $key"
+    
+    # This is a simulation - in reality you'd use openssl
+    if [ "$key" == "CORRECT_KEY_HERE" ]; then
+        echo "SUCCESS: Decryption complete"
+        cat dev_journal_decrypted.txt
+    else
+        echo "ERROR: Invalid decryption key"
+        echo "Key format should be: [MANA_VALLEY_SOLUTION]_[BURGER_RIOT_PASSWORD]_[SESSION]"
+    fi
+}
+
+# The real decryption happens when you submit the final passphrase
+# This tool is just a hint to the puzzle structure
+
+echo "Hint: Look at the hex values. Look at the intervals."
+echo "Hint: The answer flows through all projects."
+echo "Hint: Your unique session is part of the key: ${SESSION_ID}"
+`
+        };
+
+        // Command handlers
+        const commands = {
+            help: () => {
+                let helpText = `
+Available commands:
+  help     - Show this help message
+  ls       - List files in current directory
+  cat      - Display file contents (usage: cat <filename>)
+  clear    - Clear the terminal screen
+  session  - Show your unique session ID`;
+                
+                if (gameState.terminalUnlocked) {
+                    helpText += `
+  cd       - Change directory (usage: cd <directory>)
+  grep     - Search for patterns (usage: grep <pattern> <file>)
+  decode   - Decode hex strings (usage: decode <hex>)
+  verify   - Verify a solution code`;
+                }
+                
+                if (solvedPuzzles.length >= 2) {
+                    helpText += `
+  decrypt  - Attempt to decrypt files (usage: decrypt <key>)
+  status   - Show puzzle completion status`;
+                }
+                
+                return helpText;
+            },
+            
+            ls: () => {
+                if (gameState.currentDir === '~') {
+                    let output = '\nProjects:\n';
+                    for (let [project, data] of Object.entries(gameState.projects)) {
+                        const status = data.locked ? '[LOCKED]' : 
+                                     data.solved ? '[SOLVED]' : '[ACTIVE]';
+                        const className = data.locked ? 'locked' : 'folder';
+                        output += `  <span class="${className}">${project}/</span> ${status}\n`;
+                    }
+                    return output;
+                } else {
+                    const project = gameState.currentDir.replace('~/', '');
+                    if (gameState.projects[project]) {
+                        let output = `\nContents of ${project}/:\n`;
+                        gameState.projects[project].files.forEach(file => {
+                            output += `  ${file}\n`;
+                        });
+                        return output;
+                    }
+                }
+                return 'Nothing to show here.';
+            },
+            
+            cat: (args) => {
+                if (!args[0]) return 'Usage: cat <filename>';
+                
+                let filePath = args[0];
+                if (!filePath.includes('/') && gameState.currentDir !== '~') {
+                    filePath = gameState.currentDir.replace('~/', '') + '/' + filePath;
+                }
+                
+                if (fileSystem[filePath]) {
+                    return fileSystem[filePath];
+                }
+                return `Error: File '${args[0]}' not found`;
+            },
+            
+            clear: () => {
+                document.getElementById('output-container').innerHTML = '';
+                return '';
+            },
+            
+            session: () => {
+                return `Your unique session ID: <span class="success">${sessionId}</span>
+This ID is part of your final passphrase.`;
+            },
+            
+            cd: (args) => {
+                if (!gameState.terminalUnlocked) {
+                    return 'Command not available. Unlock terminal access first.';
+                }
+                
+                if (!args[0] || args[0] === '~') {
+                    gameState.currentDir = '~';
+                    return 'Changed directory to ~';
+                }
+                
+                const project = args[0].replace('/', '');
+                if (gameState.projects[project]) {
+                    if (gameState.projects[project].locked) {
+                        return `Error: Project '${project}' is locked. Solve previous puzzles to unlock.`;
+                    }
+                    gameState.currentDir = `~/${project}`;
+                    return `Changed directory to ~/${project}`;
+                }
+                return `Error: Directory '${args[0]}' not found`;
+            },
+            
+            decode: (args) => {
+                if (!gameState.terminalUnlocked) {
+                    return 'Command not available yet.';
+                }
+                
+                if (!args[0]) return 'Usage: decode <hex_string>';
+                
+                try {
+                    const hex = args[0].replace(/\s/g, '');
+                    let result = '';
+                    for (let i = 0; i < hex.length; i += 2) {
+                        result += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+                    }
+                    return `Decoded: <span class="success">${result}</span>`;
+                } catch (e) {
+                    return 'Error: Invalid hex string';
+                }
+            },
+            
+            verify: (args) => {
+                if (!args[0]) return 'Usage: verify <code>';
+                
+                const code = args[0].toUpperCase();
+                
+                // Mana Valley solution
+                if (code === 'FLOW_STATE_ALPHA' && !gameState.projects.mana_valley.solved) {
+                    gameState.projects.mana_valley.solved = true;
+                    gameState.projects.burger_riot.locked = false;
+                    gameState.terminalUnlocked = true;
+                    solvedPuzzles.push('MANA');
+                    unlockedCommands.push('cd', 'grep', 'decode', 'verify');
+                    return `<span class="success">✓ MANA VALLEY SOLVED!</span>
+
+Terminal access granted.
+New commands unlocked: cd, grep, decode, verify
+Burger Riot project is now accessible.
+
+The energy flows through you...`;
+                }
+                
+                // Burger Riot solution  
+                if (code === 'HOTSTOVE' && gameState.projects.mana_valley.solved && !gameState.projects.burger_riot.solved) {
+                    gameState.projects.burger_riot.solved = true;
+                    gameState.projects.indie_dev_500.locked = false;
+                    solvedPuzzles.push('RIOT');
+                    unlockedCommands.push('decrypt', 'status');
+                    return `<span class="success">✓ BURGER RIOT SOLVED!</span>
+
+The rhythm was the key all along.
+Indie Dev 500 project is now accessible.
+New commands unlocked: decrypt, status
+
+The patterns are becoming clearer...`;
+                }
+                
+                return `<span class="error">Invalid verification code or puzzle already solved.</span>`;
+            },
+            
+            decrypt: (args) => {
+                if (solvedPuzzles.length < 2) {
+                    return 'Decrypt command not available yet. Solve more puzzles.';
+                }
+                
+                if (!args[0]) return 'Usage: decrypt <key>';
+                
+                const key = args[0].toUpperCase();
+                const expectedKey = `MANA_HOTSTOVE_${sessionId}`;
+                
+                if (key === expectedKey) {
+                    gameState.projects.indie_dev_500.solved = true;
+                    solvedPuzzles.push('DEV500');
+                    
+                    const passphrase = generatePassphrase();
+                    return `<span class="success">✓ INDIE DEV 500 SOLVED!</span>
+<span class="success">✓✓✓ ALL CORE PUZZLES COMPLETE ✓✓✓</span>
+
+DECRYPTED DEV JOURNAL - Final Entry:
+=====================================
+
+Day 500 - The Truth
+
+All my games were connected from the start.
+Mana Valley taught us about FLOW.
+Burger Riot taught us about RHYTHM.  
+Indie Dev 500 taught us about PERSISTENCE.
+
+But they're all expressions of the same thing:
+CREATIVE ENERGY.
+
+The "Mana" was never just a game mechanic.
+It's the force that drives creation itself.
+
+Every line of code, every pixel of art,
+every sound effect, every playtest...
+It's all Mana flowing through the developer.
+
+And now you've proven you have it too.
+
+Your unique completion passphrase:
+<span class="glitch success">${passphrase}</span>
+
+Send this to the developer to prove your journey.
+This passphrase is unique to YOUR path through the terminal.
+
+Thank you for playing.
+The flow continues...
+
+=====================================`;
+                }
+                
+                return `<span class="error">Decryption failed. Invalid key format.</span>
+Expected format: MANA_VALLEY_ANSWER_BURGER_RIOT_ANSWER_SESSION_ID`;
+            },
+            
+            status: () => {
+                if (solvedPuzzles.length < 2) {
+                    return 'Status command not available yet.';
+                }
+                
+                let output = '\n=== PUZZLE STATUS ===\n';
+                output += `Mana Valley: ${gameState.projects.mana_valley.solved ? '✓ SOLVED' : '✗ Unsolved'}\n`;
+                output += `Burger Riot: ${gameState.projects.burger_riot.solved ? '✓ SOLVED' : '✗ Unsolved'}\n`;
+                output += `Indie Dev 500: ${gameState.projects.indie_dev_500.solved ? '✓ SOLVED' : '✗ Unsolved'}\n`;
+                output += `\nPuzzles solved: ${solvedPuzzles.length}/3\n`;
+                output += `Session ID: ${sessionId}\n`;
+                return output;
+            },
+            
+            grep: (args) => {
+                if (!gameState.terminalUnlocked) {
+                    return 'Command not available yet.';
+                }
+                return 'grep: Basic implementation - try reading files with cat instead';
+            }
+        };
+
+        function generatePassphrase() {
+            const checksum = solvedPuzzles.join('').split('').reduce((a, b) => {
+                return ((a << 5) - a + b.charCodeAt(0)) | 0;
+            }, 0);
+            return `MANA-${sessionId}-${Math.abs(checksum).toString(36).toUpperCase()}`;
+        }
+
+        // Terminal input handling
+        const input = document.getElementById('command-input');
+        const outputContainer = document.getElementById('output-container');
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = input.value.trim();
+                if (command) {
+                    processCommand(command);
+                    input.value = '';
+                }
+            }
+        });
+
+        function processCommand(commandStr) {
+            // Display the command
+            const commandDiv = document.createElement('div');
+            commandDiv.className = 'prompt';
+            commandDiv.textContent = commandStr;
+            outputContainer.appendChild(commandDiv);
+
+            // Parse and execute
+            const parts = commandStr.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            const outputDiv = document.createElement('div');
+            outputDiv.className = 'output';
+
+            if (commands[cmd]) {
+                const result = commands[cmd](args);
+                outputDiv.innerHTML = result;
+            } else {
+                outputDiv.innerHTML = `<span class="error">Command not found: ${cmd}</span>
+Type 'help' for available commands.`;
+            }
+
+            outputContainer.appendChild(outputDiv);
+            
+            // Scroll to bottom
+            const terminal = document.getElementById('terminal');
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // Auto-focus input
+        document.addEventListener('click', () => {
+            input.focus();
+        });
+
+        // Console Easter Egg
+        console.log('%c🔮 AIA Developer Terminal', 'color: #00ff00; font-size: 20px; font-weight: bold;');
+        console.log('%cYou found the console! But the real puzzles are in the terminal...', 'color: #00aa00;');
+        console.log('%cHint: The hex values in the files are important.', 'color: #006600;');
+        console.log('%cHint: Patterns exist across multiple files.', 'color: #006600;');
+        console.log('%cHint: Your session ID is part of the final answer.', 'color: #006600;');
+        console.log(`%cYour Session: ${sessionId}`, 'color: #00ff00; font-weight: bold;');
+    </script>
+</body>
+</html>
