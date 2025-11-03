@@ -127,6 +127,7 @@ input {
     outline: none;
     width: calc(100% - 200px);
     text-shadow: 0 0 5px #00ff00;
+    padding-top: 13px;
 }
 
 .cursor {
