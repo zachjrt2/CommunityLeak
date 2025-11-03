@@ -1,7 +1,7 @@
 // Session Management
 const sessionId = 'S' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
 let solvedPuzzles = [];
-let unlockedCommands = ['help', 'ls', 'cat', 'clear'];
+let unlockedCommands = ['help', 'ls', 'cat', 'clear', 'cd'];
 let discoveredSecrets = [];
 let hintsUnlocked = [];
 let fileSystem = {};
