@@ -1,7 +1,7 @@
 // Session Management
 const sessionId = 'S' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
 let solvedPuzzles = [];
-let unlockedCommands = ['help', 'ls', 'cat', 'clear'];
+let unlockedCommands = ['help', 'ls', 'cat', 'clear', 'cd'];
 let discoveredSecrets = [];
 let hintsUnlocked = [];
 let fileSystem = {};
@@ -76,9 +76,9 @@ async function loadFileSystem() {
     try {
         const response = await fetch('filesystem.json');
         fileSystem = await response.json();
+        console.log('Filesystem loaded:', fileSystem); // Debug line
     } catch (error) {
         console.error('Error loading filesystem:', error);
-        // Fallback to empty filesystem
         fileSystem = {};
     }
 }
@@ -91,20 +91,21 @@ Available commands:
   help     - Show this help message
   ls       - List files in current directory  
   cat      - Display file contents (usage: cat <filename>)
+  cd       - Change directory (usage: cd <directory>)
   clear    - Clear the terminal screen
   session  - Show your unique session ID
 
 <span class="success">➤ GETTING STARTED:</span>
   1. Type 'ls' to see available projects
-  2. Type 'cat mana_valley/concept.txt' to read files
-  3. Look for patterns, hex codes, and hidden clues
-  4. Type 'verify <CODE>' when you find a solution
+  2. Type 'cd mana_valley' to enter a project
+  3. Type 'cat concept.txt' to read files
+  4. Look for patterns, hex codes, and hidden clues
+  5. Type 'verify <CODE>' when you find a solution
   
 <span class="warning">➤ TIP: Use arrow keys (↑/↓) to navigate command history</span>`;
         
         if (gameState.terminalUnlocked) {
             helpText += `
-  cd       - Change directory (usage: cd <directory>)
   grep     - Search for patterns (usage: grep <pattern> <file>)
   decode   - Decode hex strings (usage: decode <hex>)
   verify   - Verify a solution code`;
@@ -192,9 +193,14 @@ Available commands:
         if (!args[0]) return 'Usage: cat <filename>\n\n<span class="success">Tip: Use "ls" to see available files in the current directory</span>';
         
         let filePath = args[0];
+        
+        // If we're in a subdirectory and the path doesn't contain '/', prepend current directory
         if (!filePath.includes('/') && gameState.currentDir !== '~') {
             filePath = gameState.currentDir.replace('~/', '') + '/' + filePath;
         }
+        
+        console.log('Attempting to read file:', filePath); // Debug line
+        console.log('Available files:', Object.keys(fileSystem)); // Debug line
         
         if (fileSystem[filePath]) {
             // Track discoveries from side puzzles
@@ -218,16 +224,16 @@ Available commands:
         const suggestions = [];
         
         for (let path in fileSystem) {
-            if (path.endsWith(fileName)) {
+            if (path.endsWith(fileName) || path.includes(fileName)) {
                 suggestions.push(path);
             }
         }
         
         if (suggestions.length > 0) {
-            return `Error: File '${args[0]}' not found\n\n<span class="warning">Did you mean:</span>\n${suggestions.map(s => `  cat ${s}`).join('\n')}`;
+            return `Error: File '${args[0]}' not found\n\n<span class="warning">Did you mean:</span>\n${suggestions.slice(0, 5).map(s => `  cat ${s}`).join('\n')}`;
         }
         
-        return `Error: File '${args[0]}' not found\n\n<span class="success">Tip: Use "ls" to see available files, or try "cat project_name/filename"</span>`;
+        return `Error: File '${args[0]}' not found\n\n<span class="success">Tip: Use "ls" to see available files, or try "cat project_name/filename"</span>\n\nCurrent directory: ${gameState.currentDir}`;
     },
     
     clear: () => {
@@ -241,9 +247,7 @@ This ID is part of your final passphrase.`;
     },
     
     cd: (args) => {
-        if (!gameState.terminalUnlocked) {
-            return 'Command not available. Unlock terminal access first.';
-        }
+        // Removed the terminalUnlocked check entirely
         
         if (!args[0] || args[0] === '~') {
             gameState.currentDir = '~';
@@ -256,8 +260,8 @@ This ID is part of your final passphrase.`;
             return 'Changed directory to ~';
         }
         
-        const project = args[0].replace('/', '').replace('.', '');
-        const fullProject = args[0].startsWith('.') ? '.' + project : project;
+        const project = args[0].replace('/', '');
+        const fullProject = args[0].startsWith('.') ? args[0] : project;
         
         if (gameState.projects[fullProject]) {
             if (gameState.projects[fullProject].locked) {
@@ -299,11 +303,11 @@ This ID is part of your final passphrase.`;
             gameState.projects.burger_riot.locked = false;
             gameState.terminalUnlocked = true;
             solvedPuzzles.push('MANA');
-            unlockedCommands.push('cd', 'grep', 'decode', 'verify');
+            unlockedCommands.push('grep', 'decode', 'verify');
             return `<span class="success">✓ MANA VALLEY SOLVED!</span>
 
 Terminal access granted.
-New commands unlocked: cd, grep, decode, verify
+New commands unlocked: grep, decode, verify
 Burger Riot project is now accessible.
 
 The energy flows through you...
