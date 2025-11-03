@@ -5,6 +5,8 @@ let unlockedCommands = ['help', 'ls', 'cat', 'clear'];
 let discoveredSecrets = [];
 let hintsUnlocked = [];
 let fileSystem = {};
+let commandHistory = [];
+let historyIndex = -1;
 
 // Game State
 const gameState = {
@@ -90,7 +92,15 @@ Available commands:
   ls       - List files in current directory  
   cat      - Display file contents (usage: cat <filename>)
   clear    - Clear the terminal screen
-  session  - Show your unique session ID`;
+  session  - Show your unique session ID
+
+<span class="success">➤ GETTING STARTED:</span>
+  1. Type 'ls' to see available projects
+  2. Type 'cat mana_valley/concept.txt' to read files
+  3. Look for patterns, hex codes, and hidden clues
+  4. Type 'verify <CODE>' when you find a solution
+  
+<span class="warning">➤ TIP: Use arrow keys (↑/↓) to navigate command history</span>`;
         
         if (gameState.terminalUnlocked) {
             helpText += `
@@ -119,6 +129,10 @@ Available commands:
         
         if (gameState.currentDir === '~') {
             let output = '\nProjects:\n';
+            let mainProjects = [];
+            let sideProjects = [];
+            let hiddenProjects = [];
+            
             for (let [project, data] of Object.entries(gameState.projects)) {
                 // Skip hidden projects unless -a flag used
                 if (data.type === 'hidden' && !showAll) continue;
@@ -133,12 +147,28 @@ Available commands:
                 const prefix = data.type === 'main' ? '★ ' : 
                              data.type === 'hidden' ? '. ' : '  ';
                 
-                output += `  <span class="${className}">${prefix}${project}/</span> ${status}\n`;
+                const entry = `  <span class="${className}">${prefix}${project}/</span> ${status}`;
+                
+                if (data.type === 'main') mainProjects.push(entry);
+                else if (data.type === 'side') sideProjects.push(entry);
+                else hiddenProjects.push(entry);
+            }
+            
+            if (mainProjects.length > 0) {
+                output += '<span class="warning">Main Puzzles:</span>\n' + mainProjects.join('\n') + '\n\n';
+            }
+            if (sideProjects.length > 0) {
+                output += '<span class="success">Side Projects (optional hints):</span>\n' + sideProjects.join('\n') + '\n\n';
+            }
+            if (hiddenProjects.length > 0) {
+                output += '<span class="corrupted">Hidden:</span>\n' + hiddenProjects.join('\n') + '\n';
             }
             
             if (!showAll) {
                 output += '\n<span class="hidden-hint">Hint: Try "ls -a" to show hidden files</span>';
             }
+            
+            output += '\n\n<span class="success">Tip: Use "cd <project>" to enter a project folder</span>';
             
             return output;
         } else {
@@ -151,6 +181,7 @@ Available commands:
                     const className = hidden ? 'corrupted' : '';
                     output += `  <span class="${className}">${file}</span>\n`;
                 });
+                output += '\n<span class="success">Tip: Use "cat <filename>" to read a file</span>';
                 return output;
             }
         }
@@ -158,7 +189,7 @@ Available commands:
     },
     
     cat: (args) => {
-        if (!args[0]) return 'Usage: cat <filename>';
+        if (!args[0]) return 'Usage: cat <filename>\n\n<span class="success">Tip: Use "ls" to see available files in the current directory</span>';
         
         let filePath = args[0];
         if (!filePath.includes('/') && gameState.currentDir !== '~') {
@@ -181,7 +212,22 @@ Available commands:
             
             return fileSystem[filePath];
         }
-        return `Error: File '${args[0]}' not found`;
+        
+        // Provide helpful suggestions for common mistakes
+        const fileName = args[0];
+        const suggestions = [];
+        
+        for (let path in fileSystem) {
+            if (path.endsWith(fileName)) {
+                suggestions.push(path);
+            }
+        }
+        
+        if (suggestions.length > 0) {
+            return `Error: File '${args[0]}' not found\n\n<span class="warning">Did you mean:</span>\n${suggestions.map(s => `  cat ${s}`).join('\n')}`;
+        }
+        
+        return `Error: File '${args[0]}' not found\n\n<span class="success">Tip: Use "ls" to see available files, or try "cat project_name/filename"</span>`;
     },
     
     clear: () => {
@@ -201,6 +247,12 @@ This ID is part of your final passphrase.`;
         
         if (!args[0] || args[0] === '~') {
             gameState.currentDir = '~';
+            return 'Changed directory to ~\n\n<span class="success">Tip: Type "ls" to see available projects</span>';
+        }
+        
+        // Handle cd .. to go back
+        if (args[0] === '..') {
+            gameState.currentDir = '~';
             return 'Changed directory to ~';
         }
         
@@ -212,9 +264,9 @@ This ID is part of your final passphrase.`;
                 return `Error: Project '${fullProject}' is locked. Solve previous puzzles to unlock.`;
             }
             gameState.currentDir = `~/${fullProject}`;
-            return `Changed directory to ~/${fullProject}`;
+            return `Changed directory to ~/${fullProject}\n\n<span class="success">Tip: Type "ls" to see files, or "cd .." to go back</span>`;
         }
-        return `Error: Directory '${args[0]}' not found`;
+        return `Error: Directory '${args[0]}' not found\n\n<span class="success">Tip: Use "ls" in home directory (~) to see available projects</span>`;
     },
     
     decode: (args) => {
@@ -222,7 +274,7 @@ This ID is part of your final passphrase.`;
             return 'Command not available yet.';
         }
         
-        if (!args[0]) return 'Usage: decode <hex_string>';
+        if (!args[0]) return 'Usage: decode <hex_string>\n\nExample: decode 4D414E41\n\n<span class="success">Tip: Look for hex values in project files (they look like: 4D 41 4E 41)</span>';
         
         try {
             const hex = args[0].replace(/\s/g, '');
@@ -230,14 +282,14 @@ This ID is part of your final passphrase.`;
             for (let i = 0; i < hex.length; i += 2) {
                 result += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
             }
-            return `Decoded: <span class="success">${result}</span>`;
+            return `Decoded: <span class="success">${result}</span>\n\n<span class="warning">Keep this in mind - it might be part of a solution!</span>`;
         } catch (e) {
-            return 'Error: Invalid hex string';
+            return 'Error: Invalid hex string\n\n<span class="success">Tip: Hex strings should contain only 0-9 and A-F characters</span>';
         }
     },
     
     verify: (args) => {
-        if (!args[0]) return 'Usage: verify <code>';
+        if (!args[0]) return 'Usage: verify <code>\n\n<span class="success">Tip: Look for verification codes or passwords in the project files</span>';
         
         const code = args[0].toUpperCase();
         
@@ -256,7 +308,8 @@ Burger Riot project is now accessible.
 
 The energy flows through you...
 
-<span class="warning">Side puzzles may contain hints for future challenges.</span>`;
+<span class="warning">Side puzzles may contain hints for future challenges.</span>
+<span class="success">Progress: ${solvedPuzzles.length}/3 main puzzles solved</span>`;
         }
         
         // Burger Riot solution  
@@ -273,10 +326,16 @@ New commands unlocked: decrypt, status
 
 The patterns are becoming clearer...
 
-<span class="warning">The archive folder may hold the final pieces...</span>`;
+<span class="warning">The archive folder may hold the final pieces...</span>
+<span class="success">Progress: ${solvedPuzzles.length}/3 main puzzles solved</span>`;
         }
         
-        return `<span class="error">Invalid verification code or puzzle already solved.</span>`;
+        return `<span class="error">Invalid verification code or puzzle already solved.</span>
+
+<span class="warning">Make sure you:</span>
+  - Have the correct code format
+  - Haven't already solved this puzzle
+  - Are solving puzzles in order (check "status" command)`;
     },
     
     decrypt: (args) => {
@@ -428,7 +487,24 @@ input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const command = input.value.trim();
         if (command) {
+            commandHistory.push(command);
+            historyIndex = commandHistory.length;
             processCommand(command);
+            input.value = '';
+        }
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (historyIndex > 0) {
+            historyIndex--;
+            input.value = commandHistory[historyIndex];
+        }
+    } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            input.value = commandHistory[historyIndex];
+        } else {
+            historyIndex = commandHistory.length;
             input.value = '';
         }
     }
