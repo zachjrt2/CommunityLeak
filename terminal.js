@@ -79,15 +79,16 @@ async function loadFileSystem() {
         "mana_valley/concept.txt": `
 MANA VALLEY - Core Concept Document
 ====================================
-Date: 2023-04-15
+Date: 2019-04-15
 Status: ACTIVE DEVELOPMENT
 
 Core Mechanic: Resource management meets exploration
 Theme: Energy as a living, flowing entity
+Inspiration: Stardew Valley, Breath of the Wild
 
 The player must balance:
 - Mana collection (primary resource)
-- Valley expansion (territory control)  
+- Valley exploration (finding new plaves)  
 - Entity relationships (diplomacy/combat)
 
 DESIGN PILLARS:
@@ -237,10 +238,10 @@ Decoded from riot mode sound gaps:
 ... --- ... (SOS? No, wait...)
 
 Actually decoded (using riot mode timestamp intervals):
-- .... --- - (HOT)
-... - --- ...- . (STOVE)
+- .... --- -
+... - --- ...- .
 
-Password for next level: HOTSTOVE? 
+Password for next level? 
 
 BUG-003: Customer AI pathfinding error
 Severity: LOW  
@@ -285,18 +286,18 @@ INDIE DEV 500 - The Journey
 ============================
 
 A game about making games.
-500 days of development.
-1 developer.
+A race to be remembered.
+7 developers.
 Infinite coffee.
 
 This project is a love letter to the indie dev grind.
-Every mechanic represents a real struggle:
-- Resource management = Time & money
-- Random events = Life happening  
-- Tech tree = Learning new skills
-- Boss battles = Crunch time
+Every bot made by a contestent represents a real struggle:
+- Resource management = Time & complexity
+- Physics Unpredictabilaty = Life happening  
+- Node structure = Learning new skills
+- Time Limit = Crunch time
 
-The game tracks YOUR actual play sessions.
+The game was built to break you.
 It knows when you're struggling.
 It adapts.
 
@@ -1245,7 +1246,7 @@ The patterns are becoming clearer...
   - Haven't already solved this puzzle
   - Are solving puzzles in order (check "status" command)`;
     },
-    
+        
     decrypt: (args) => {
         if (solvedPuzzles.length < 2) {
             return 'Decrypt command not available yet. Solve more puzzles.';
@@ -1254,7 +1255,7 @@ The patterns are becoming clearer...
         if (!args[0]) return 'Usage: decrypt <key>';
         
         const key = args[0].toUpperCase();
-        const expectedKey = `MANA_HOTSTOVE_${sessionId}`;
+        const expectedKey = `FLOW_STATE_ALPHA_HOTSTOVE_${sessionId.toUpperCase()}`;
         
         if (key === expectedKey) {
             gameState.projects.indie_dev_500.solved = true;
