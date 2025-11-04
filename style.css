@@ -35,7 +35,18 @@ body {
     height: 100vh;
     position: relative;
 }
+.rotating-word {
+    display: inline-block;
+    color: #00ffaa;
+    font-weight: bold;
+    text-shadow: 0 0 8px #00ffaa;
+    animation: pulse 3s ease-in-out infinite;
+}
 
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
 /* CRT Effects */
 .crt-overlay {
     position: fixed;
