@@ -1,10 +1,9 @@
 // Typewriter effect for terminal
 class Typewriter {
     constructor() {
-        this.speed = 8; // milliseconds per chunk
-        this.chunkSize = 10; // characters to display at once
-        this.lineDelay = 0; // delay between lines (0 = all lines type simultaneously)
-        this.glitchChance = 0.01; // 1% chance of glitch per character
+        this.speed = 3; // milliseconds per chunk (lower = faster)
+        this.chunkSize = 10; // characters to display at once (higher = faster)
+        this.lineDelay = 0; // delay between lines
         this.queue = [];
         this.isTyping = false;
     }
@@ -20,22 +19,71 @@ class Typewriter {
     }
 
     async typeHTML(parent, html, speed) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
+        let i = 0;
         
-        for (let node of tempDiv.childNodes) {
-            if (node.nodeType === Node.TEXT_NODE) {
-                await this.typeText(parent, node.textContent, speed);
-            } else if (node.nodeType === Node.ELEMENT_NODE) {
-                const newElement = document.createElement(node.tagName);
-                
-                // Copy attributes
-                for (let attr of node.attributes) {
-                    newElement.setAttribute(attr.name, attr.value);
+        while (i < html.length) {
+            const char = html[i];
+            
+            // Check if we're at a tag
+            if (char === '<') {
+                // Find the end of the tag
+                let tagEnd = html.indexOf('>', i);
+                if (tagEnd !== -1) {
+                    // Check if it's a closing tag
+                    const isClosingTag = html[i + 1] === '/';
+                    
+                    if (isClosingTag) {
+                        // Just add the closing tag
+                        const tag = html.substring(i, tagEnd + 1);
+                        const temp = document.createElement('div');
+                        temp.innerHTML = parent.innerHTML + tag;
+                        parent.innerHTML = temp.innerHTML;
+                        i = tagEnd + 1;
+                    } else {
+                        // Opening tag - find its closing tag and include all content
+                        const tagName = html.substring(i + 1, tagEnd).split(' ')[0].split('>')[0];
+                        const closingTag = `</${tagName}>`;
+                        const closingIndex = html.indexOf(closingTag, tagEnd);
+                        
+                        if (closingIndex !== -1) {
+                            // Get the entire element (opening tag + content + closing tag)
+                            const fullElement = html.substring(i, closingIndex + closingTag.length);
+                            
+                            // Add it all at once
+                            const temp = document.createElement('div');
+                            temp.innerHTML = fullElement;
+                            parent.appendChild(temp.firstChild);
+                            
+                            i = closingIndex + closingTag.length;
+                            await this.sleep(speed);
+                        } else {
+                            // Self-closing or malformed - just add the tag
+                            const tag = html.substring(i, tagEnd + 1);
+                            const temp = document.createElement('div');
+                            temp.innerHTML = tag;
+                            if (temp.firstChild) {
+                                parent.appendChild(temp.firstChild);
+                            }
+                            i = tagEnd + 1;
+                        }
+                    }
+                    continue;
                 }
-                
-                parent.appendChild(newElement);
-                await this.typeHTML(newElement, node.innerHTML, speed);
+            }
+            
+            // Regular character - add multiple at once for speed
+            let textChunk = '';
+            let charCount = 0;
+            
+            while (i < html.length && html[i] !== '<' && charCount < this.chunkSize) {
+                textChunk += html[i];
+                i++;
+                charCount++;
+            }
+            
+            if (textChunk.length > 0) {
+                parent.appendChild(document.createTextNode(textChunk));
+                await this.sleep(speed);
             }
         }
     }
@@ -45,34 +93,15 @@ class Typewriter {
         while (i < text.length) {
             // Determine chunk size (may be smaller at end of text)
             const currentChunkSize = Math.min(this.chunkSize, text.length - i);
-            const chunk = text.substr(i, currentChunkSize);
+            const chunk = text.substring(i, i + currentChunkSize);
             
-            // Add characters in this chunk
-            for (let j = 0; j < chunk.length; j++) {
-                const char = chunk[j];
-                
-                // Random glitch effect
-                if (Math.random() < this.glitchChance) {
-                    const glitchChars = ['█', '▓', '▒', '░', '╬', '╣', '║', '╗', '╝', '¶', '§'];
-                    const glitch = glitchChars[Math.floor(Math.random() * glitchChars.length)];
-                    
-                    const textNode = document.createTextNode(glitch);
-                    element.appendChild(textNode);
-                    await this.sleep(speed / (this.chunkSize * 2));
-                    textNode.textContent = char;
-                } else {
-                    element.appendChild(document.createTextNode(char));
-                }
-            }
+            element.appendChild(document.createTextNode(chunk));
             
             i += currentChunkSize;
             
             // Wait before next chunk (unless we're at the end)
             if (i < text.length) {
-                // Variable speed for more organic feel
-                const variance = speed * 0.3;
-                const actualSpeed = speed + (Math.random() * variance - variance / 2);
-                await this.sleep(actualSpeed);
+                await this.sleep(speed);
             }
         }
     }

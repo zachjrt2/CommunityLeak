@@ -1,3 +1,78 @@
+// Session Management
+const sessionId = 'S' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+let solvedPuzzles = [];
+let unlockedCommands = ['help', 'ls', 'cat', 'clear', 'cd'];
+let discoveredSecrets = [];
+let hintsUnlocked = [];
+let fileSystem = {};
+let commandHistory = [];
+let historyIndex = -1;
+
+// Game State
+const gameState = {
+    currentDir: '~',
+    terminalUnlocked: false,
+    showHidden: false,
+    projects: {
+        'mana_valley': {
+            locked: false,
+            solved: false,
+            type: 'main',
+            files: ['concept.txt', 'design_doc.md', 'energy_system.log', '.hidden_notes']
+        },
+        'burger_riot': {
+            locked: true,
+            solved: false,
+            type: 'main',
+            files: ['playtest_report.txt', 'bug_log.dat', 'timestamp_analysis.csv']
+        },
+        'indie_dev_500': {
+            locked: true,
+            solved: false,
+            type: 'main',
+            files: ['dev_journal.enc', 'decrypt_tool.sh', 'README.txt']
+        },
+        '.archive': {
+            locked: false,
+            solved: false,
+            type: 'hidden',
+            files: ['manifest.txt', 'memory_fragments.log']
+        },
+        'pixel_labs': {
+            locked: false,
+            solved: false,
+            type: 'side',
+            files: ['lab_blueprints.txt', 'clone_data.csv', 'research_notes.md']
+        },
+        'simons_hallway': {
+            locked: false,
+            solved: false,
+            type: 'side',
+            files: ['direction_log.txt', 'failure_analysis.dat', '.corridor_map']
+        },
+        'desktop_village': {
+            locked: false,
+            solved: false,
+            type: 'side',
+            files: ['twitch_integration.js', 'defense_patterns.txt', 'chat_logs.txt']
+        },
+        'mana_god': {
+            locked: false,
+            solved: false,
+            type: 'side',
+            files: ['fortress_design.md', 'goblin_ai.txt', '.mana_connection']
+        },
+        'suspended': {
+            locked: false,
+            solved: false,
+            type: 'side',
+            files: ['destruction_metrics.csv', 'school_layout.txt', 'chaos_theory.md']
+        }
+    }
+};
+
+
+
 // Load filesystem - embedded data
 async function loadFileSystem() {
     fileSystem = {
@@ -13,7 +88,7 @@ Inspiration: Stardew Valley, Breath of the Wild
 
 The player must balance:
 - Mana collection (primary resource)
-- Valley exploration (finding new plaves)  
+- Valley exploration (finding new places)
 - Entity relationships (diplomacy/combat)
 
 DESIGN PILLARS:
@@ -22,40 +97,69 @@ DESIGN PILLARS:
 3. Consequence - Actions ripple through the valley
 
 Color Palette Research:
-Primary: #4D414E (Deep Purple)
-Secondary: #416E4D (Forest Green)
-Accent: #4E4D41 (Earthen Brown)
-Highlight: #41454E (Storm Blue)
+#434F52 - Primary
+#455354 - Secondary
+#544845 - Cave Rocks
+#45414C - Witches heart
+#504841 - Field Grain
+#554E44 - Corrupted Mana
+#495346 - Nona's Amulet
+#415445 - Pomplu Leaf
+#4C4F57 - Basic Rocks
+#554E44 - Corrupted Mana
+#455253 - Pomplu Soul
+#4B4559 - Cave Lighting
+#434F52 - Amberfin Ash
+#455253 - Mana Essence
+#554E44 - Ocean Floor (Night)
 
-Notes: The hex values aren't just colors...
+Developer note:
+These hex values are not random — they hide letters if read as ASCII.
+Each pair of digits (e.g., 4D → M) forms a word.
+
+If decoded correctly, they reveal a keyword needed for the energy system.
+Try starting with the Primary color and follow the same process for the others.
+When finished, check the system logs for where to use it.
+
 `,
 
         "mana_valley/design_doc.md": `
-# Mana Valley Design Document
-
-## Energy System Architecture
-
-\`\`\`
-Energy Flow Model:
-Source -> Conduit -> Storage -> Application
-
-Energy Types:
-- Raw Mana (harvested)
-- Refined Mana (processed)
-- Corrupted Mana (unstable)
-\`\`\`
-
 ## World Building
 
 The valley exists in multiple states simultaneously.
 Players experience different "frequencies" of reality.
 
-Frequency Codes (for debug):
-- F1: Physical realm
-- F2: Energy realm  
-- F3: ???
+Stage 1:
+Cave exploration should expand the usability of the map and lay foundations for
+mining.
+[Implement]
+    - Cave Rocks
+    - Cave Lighting
+Stage 2:
+Nona needs some more story and her house could use a little landscaping.
+[Implement] 
+    - Nona's Amulet
+    - Basic Rocks
+Stage 3:
+Redo the color balancing on the world to help unify the design language.
+[Color Considerations]
+    - Ocean Floor (Night)
+    - Mana Essence
+    - Primary
+    - Secondary
+    - Pomplu Leaf
+Stage 4:
+New inventory system to help players gather and interact with items in the world
+[Items to make stackable]
+    - Corrupted Mana
+    - Pomplu Soul
+    - Amberfin Ash
+    - Witches heart
+    - Field Grain
 
-Internal dev note: Check commit SHA 5f3759df for frequency shader code
+Internal note:
+The Alpha Flow shows unique synchronization behavior.
+Terminal access for Alpha testing requires correct state identification.
 
 ## Cross-Project Notes
 Strange... the mana flow patterns match the clone distribution in Pixel Labs.
@@ -71,39 +175,36 @@ Is there a connection? Check .archive for memory fragments.
 [2023-04-15 14:24:31] Emergency containment: ACTIVE
 [2023-04-15 14:24:35] System stabilized
 
-[ERROR] Unusual pattern in collection sequence:
-Positions: (4,13), (1,14), (14,1), (1,14)
-Cross-reference with hex color values in concept doc?
+[INFO] Decoding attempt: Using color data from concept.txt
+Result: Primary (#4D414E41) → "MANA"
+Additional values pending analysis.
 
-[2023-04-15 14:25:00] Session ended normally
+[NOTE] Cross-reference remaining color hex codes with the pattern above.
+Each decoded word may combine to form an instruction or key phrase.
+
+[2023-04-15 14:25:00] Active testing branch: ALPHA
+[2023-04-15 14:25:01] State reference placeholder: FLOW_STATE_[???]
+Consult developer notes for completion.
 `,
 
         "mana_valley/.hidden_notes": `
-Dev Notes (Personal - DO NOT COMMIT)
-====================================
+Dev Notes (Private)
+====================
 
-The mana system is more than a game mechanic.
-It's about FLOW. It's about CONNECTION.
+Confirmed: The color codes in concept.txt are a cipher. 
+           https://www.rapidtables.com/convert/number/hex-to-ascii.html
 
-When I look at the energy patterns, I see something:
-The way mana moves between pools... it's not random.
+Decoded sequence so far:
+    #544845 → THE
+    #4B4559... (still decoding, may spell "KEY")
+The words form a phrase related to the system’s key. But what order should the
+colors come in. Perhaps design docs give some insight.
 
-It's like the game is trying to tell us something.
+Final access format:
+[WORD]_[WORD]_[WORD]
 
-Hex values from concept art -> ASCII chars:
-4D 41 4E 41 = M A N A
-41 4E 53 57 45 52 = ?
-
-The answer is in the energy flow coordinates.
-Grid position (row, col) from energy_system.log...
-
-This is crazy. I'm seeing patterns that shouldn't exist.
-But what if they're real?
-
-Verification code for terminal access: FLOW_STATE_ALPHA
-
-P.S. If you're stuck on the rhythm puzzle later, check Simon's Hallway.
-Directions and timing... they're related.
+Check the latest energy_system.log entry for which branch is currently active.
+That should tell you what goes in the brackets.
 `,
 
         "burger_riot/playtest_report.txt": `
@@ -379,12 +480,12 @@ The clones are trying to communicate something.
 
 ## Hint for Future Me
 If you're stuck on coordinate systems in other projects,
-remember: Everything is connected through <span class="rotating-word" data-words="position|location|placement|coordinate">position</span> data.
+remember: Everything is connected through position data.
 
 Row 4, Column 13 = ?
 Row 1, Column 14 = ?
 
-Think GRID. Think <span class="rotating-word" data-words="ASCII|UNICODE|BINARY|HEX">ASCII</span>. Think <span class="rotating-word" data-words="LETTERS|NUMBERS|SYMBOLS|WORDS">LETTERS</span>.
+Think GRID. Think ASCII. Think LETTERS.
 `,
 
         "simons_hallway/direction_log.txt": `
@@ -456,7 +557,7 @@ You get a MESSAGE.
 But I'm not going to spoil it here.
 Figure it out yourself, future puzzle solver.
 
-Hint: Combine this with the <span class="rotating-word" data-words="timestamp|duration|interval|timing">timestamp</span> intervals
+Hint: Combine this with the timestamp intervals
 from Burger Riot. They're the SAME TYPE of puzzle.
 `,
 
@@ -482,8 +583,8 @@ Time between commands (ms):
 500, 2000, 500, 1000, 500, 2000, 1000, 500
 
 Convert to beats:
-Short (<span class="rotating-word" data-words="500ms|250ms|100ms|1000ms">500ms</span>) = .
-Long (<span class="rotating-word" data-words="2000ms|1000ms|3000ms|500ms">2000ms</span>) = -  
+Short (500ms) = .
+Long (2000ms) = -  
 Medium (1000ms) = (space between letters)
 
 . - . (space) . - (space) . 
@@ -498,7 +599,7 @@ Second group: . - = A
 RA? 
 Or keep going with more sessions?
 
-[HIDDEN HINT: This helps decode Burger Riot <span class="rotating-word" data-words="timestamps|durations|intervals|patterns">timestamps</span>]
+[HIDDEN HINT: This helps decode Burger Riot timestamps]
 `,
 
         "desktop_village/twitch_integration.js": `
@@ -653,10 +754,10 @@ They're the same as:
 - Pixel Labs clone spawn points  
 - Desktop Village tower placements
 
-Everything is connected through <span class="rotating-word" data-words="COORDINATES|POSITIONS|LOCATIONS|GRIDS">COORDINATES</span>.
+Everything is connected through COORDINATES.
 
-[MAJOR HINT]: If you're trying to decode <span class="rotating-word" data-words="position|location|coordinate|grid">position</span>-based puzzles,
-this is your Rosetta Stone. The coordinates <span class="rotating-word" data-words="MEAN|ENCODE|SPELL|HIDE">MEAN</span> something.
+[MAJOR HINT]: If you're trying to decode position-based puzzles,
+this is your Rosetta Stone. The coordinates MEAN something.
 `,
 
         "mana_god/.mana_connection": `
@@ -689,8 +790,8 @@ My subconscious is connecting all my work.
 Finding patterns I didn't consciously design.
 
 Coordinates: (4,13) (1,14) (14,1) (1,14)
-These <span class="rotating-word" data-words="positions|coordinates|points|locations">positions</span> spell something.
-<span class="rotating-word" data-words="Row|Column|X|Y">Row</span> = Letter number. Column = ???
+These positions spell something.
+Row = Letter number. Column = ???
 
 Figure it out. The archive has more clues.
 `,
@@ -782,19 +883,19 @@ if chaos_value > threshold:
     trigger_cascade_event()
 \`\`\`
 
-The cascade events trigger at SPECIFIC <span class="rotating-word" data-words="intervals|durations|timings|periods">intervals</span>.
+The cascade events trigger at SPECIFIC intervals.
 Not random.
 
-The intervals match <span class="rotating-word" data-words="MORSE|BINARY|ASCII|HEX">MORSE</span> CODE timing.
-- Short pulse: <span class="rotating-word" data-words="0.5s|1.0s|0.25s|2.0s">0.5s</span>
-- Long pulse: <span class="rotating-word" data-words="2.0s|1.0s|3.0s|0.5s">2.0s</span>
+The intervals match MORSE CODE timing.
+- Short pulse: 0.5s
+- Long pulse: 2.0s
 
 Did I do this on purpose?
 Or is my subconscious encoding messages in my games?
 
 [HINT FOR BURGER RIOT PUZZLE]:
 If you're stuck on the timing puzzle,
-remember that chaos has <span class="rotating-word" data-words="rhythm|pattern|timing|structure">rhythm</span>.
+remember that chaos has rhythm.
 The intervals between chaos events = morse code.
 `,
 
@@ -911,20 +1012,482 @@ And they're speaking to you.
     };
     
     console.log('Filesystem loaded with', Object.keys(fileSystem).length, 'files');
-    
-    // Initialize rotating words after a short delay
-    setTimeout(initRotatingWords, 100);
 }
 
-function initRotatingWords() {
-    setInterval(() => {
-        const rotatingElements = document.querySelectorAll('.rotating-word');
-        rotatingElements.forEach(el => {
-            const words = el.getAttribute('data-words').split('|');
-            const currentText = el.textContent;
-            const currentIndex = words.indexOf(currentText);
-            const nextIndex = (currentIndex + 1) % words.length;
-            el.textContent = words[nextIndex];
-        });
-    }, 3000); // Rotate every 3 seconds
+// Command handlers
+const commands = {
+    help: () => {
+        let helpText = `
+Available commands:
+  help     - Show this help message
+  ls       - List files in current directory  
+  cat      - Display file contents (usage: cat <filename>)
+  cd       - Change directory (usage: cd <directory>)
+  clear    - Clear the terminal screen
+  session  - Show your unique session ID
+
+<span class="success">➤ GETTING STARTED:</span>
+  1. Type 'ls' to see available projects
+  2. Type 'cd mana_valley' to enter a project
+  3. Type 'cat concept.txt' to read files
+  4. Look for patterns, hex codes, and hidden clues
+  5. Type 'verify <CODE>' when you find a solution
+  
+<span class="warning">➤ TIP: Use arrow keys (↑/↓) to navigate command history</span>`;
+        
+        if (gameState.terminalUnlocked) {
+            helpText += `
+  grep     - Search for patterns (usage: grep <pattern> <file>)
+  decode   - Decode hex strings (usage: decode <hex>)
+  verify   - Verify a solution code`;
+        }
+        
+        if (solvedPuzzles.length >= 2) {
+            helpText += `
+  decrypt  - Attempt to decrypt files (usage: decrypt <key>)
+  status   - Show puzzle completion status`;
+        }
+
+        if (discoveredSecrets.length >= 3) {
+            helpText += `
+  hints    - View unlocked hints from side puzzles`;
+        }
+        
+        return helpText;
+    },
+    
+    ls: (args) => {
+        const showAll = args && args[0] === '-a';
+        
+        if (gameState.currentDir === '~') {
+            let output = '\nProjects:\n';
+            let mainProjects = [];
+            let sideProjects = [];
+            let hiddenProjects = [];
+            
+            for (let [project, data] of Object.entries(gameState.projects)) {
+                // Skip hidden projects unless -a flag used
+                if (data.type === 'hidden' && !showAll) continue;
+                
+                const status = data.locked ? '[LOCKED]' : 
+                             data.solved ? '[SOLVED]' : '[ACTIVE]';
+                
+                let className = data.locked ? 'locked' : 'folder';
+                if (data.type === 'side') className += ' archived';
+                if (data.type === 'hidden') className += ' corrupted';
+                
+                const prefix = data.type === 'main' ? '★ ' : 
+                             data.type === 'hidden' ? '. ' : '  ';
+                
+                const entry = `  <span class="${className}">${prefix}${project}/</span> ${status}`;
+                
+                if (data.type === 'main') mainProjects.push(entry);
+                else if (data.type === 'side') sideProjects.push(entry);
+                else hiddenProjects.push(entry);
+            }
+            
+            if (mainProjects.length > 0) {
+                output += '<span class="warning">Main Puzzles:</span>\n' + mainProjects.join('\n') + '\n\n';
+            }
+            if (sideProjects.length > 0) {
+                output += '<span class="success">Side Projects (optional hints):</span>\n' + sideProjects.join('\n') + '\n\n';
+            }
+            if (hiddenProjects.length > 0) {
+                output += '<span class="corrupted">Hidden:</span>\n' + hiddenProjects.join('\n') + '\n';
+            }
+            
+            if (!showAll) {
+                output += '\n<span class="hidden-hint">Hint: Try "ls -a" to show hidden files</span>';
+            }
+            
+            output += '\n\n<span class="success">Tip: Use "cd <project>" to enter a project folder</span>';
+            
+            return output;
+        } else {
+            const project = gameState.currentDir.replace('~/', '');
+            if (gameState.projects[project]) {
+                let output = `\nContents of ${project}/:\n`;
+                gameState.projects[project].files.forEach(file => {
+                    const hidden = file.startsWith('.');
+                    if (hidden && !showAll) return;
+                    const className = hidden ? 'corrupted' : '';
+                    output += `  <span class="${className}">${file}</span>\n`;
+                });
+                output += '\n<span class="success">Tip: Use "cat <filename>" to read a file</span>';
+                return output;
+            }
+        }
+        return 'Nothing to show here.';
+    },
+    
+    cat: (args) => {
+        if (!args[0]) return 'Usage: cat <filename>\n\n<span class="success">Tip: Use "ls" to see available files in the current directory</span>';
+        
+        let filePath = args[0];
+        
+        // If we're in a subdirectory and the path doesn't contain '/', prepend current directory
+        if (!filePath.includes('/') && gameState.currentDir !== '~') {
+            filePath = gameState.currentDir.replace('~/', '') + '/' + filePath;
+        }
+        
+        console.log('Attempting to read file:', filePath); // Debug line
+        console.log('Available files:', Object.keys(fileSystem)); // Debug line
+        
+        if (fileSystem[filePath]) {
+            // Track discoveries from side puzzles
+            if (filePath.includes('pixel_labs') || 
+                filePath.includes('simons_hallway') || 
+                filePath.includes('mana_god')) {
+                const secretKey = filePath.split('/')[0];
+                if (!discoveredSecrets.includes(secretKey)) {
+                    discoveredSecrets.push(secretKey);
+                    if (discoveredSecrets.length >= 3) {
+                        return fileSystem[filePath] + '\n\n<span class="success">★ HINT UNLOCKED: Type "hints" to see your discoveries</span>';
+                    }
+                }
+            }
+            
+            return fileSystem[filePath];
+        }
+        
+        // Provide helpful suggestions for common mistakes
+        const fileName = args[0];
+        const suggestions = [];
+        
+        for (let path in fileSystem) {
+            if (path.endsWith(fileName) || path.includes(fileName)) {
+                suggestions.push(path);
+            }
+        }
+        
+        if (suggestions.length > 0) {
+            return `Error: File '${args[0]}' not found\n\n<span class="warning">Did you mean:</span>\n${suggestions.slice(0, 5).map(s => `  cat ${s}`).join('\n')}`;
+        }
+        
+        return `Error: File '${args[0]}' not found\n\n<span class="success">Tip: Use "ls" to see available files, or try "cat project_name/filename"</span>\n\nCurrent directory: ${gameState.currentDir}`;
+    },
+    
+    clear: () => {
+        document.getElementById('output-container').innerHTML = '';
+        return '';
+    },
+    
+    session: () => {
+        return `Your unique session ID: <span class="success">${sessionId}</span>
+This ID is part of your final passphrase.`;
+    },
+    
+    cd: (args) => {
+        // Removed the terminalUnlocked check entirely
+        
+        if (!args[0] || args[0] === '~') {
+            gameState.currentDir = '~';
+            return 'Changed directory to ~\n\n<span class="success">Tip: Type "ls" to see available projects</span>';
+        }
+        
+        // Handle cd .. to go back
+        if (args[0] === '..') {
+            gameState.currentDir = '~';
+            return 'Changed directory to ~';
+        }
+        
+        const project = args[0].replace('/', '');
+        const fullProject = args[0].startsWith('.') ? args[0] : project;
+        
+        if (gameState.projects[fullProject]) {
+            if (gameState.projects[fullProject].locked) {
+                return `Error: Project '${fullProject}' is locked. Solve previous puzzles to unlock.`;
+            }
+            gameState.currentDir = `~/${fullProject}`;
+            return `Changed directory to ~/${fullProject}\n\n<span class="success">Tip: Type "ls" to see files, or "cd .." to go back</span>`;
+        }
+        return `Error: Directory '${args[0]}' not found\n\n<span class="success">Tip: Use "ls" in home directory (~) to see available projects</span>`;
+    },
+    
+    decode: (args) => {
+        if (!gameState.terminalUnlocked) {
+            return 'Command not available yet.';
+        }
+        
+        if (!args[0]) return 'Usage: decode <hex_string>\n\nExample: decode 4D414E41\n\n<span class="success">Tip: Look for hex values in project files (they look like: 4D 41 4E 41)</span>';
+        
+        try {
+            const hex = args[0].replace(/\s/g, '');
+            let result = '';
+            for (let i = 0; i < hex.length; i += 2) {
+                result += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+            }
+            return `Decoded: <span class="success">${result}</span>\n\n<span class="warning">Keep this in mind - it might be part of a solution!</span>`;
+        } catch (e) {
+            return 'Error: Invalid hex string\n\n<span class="success">Tip: Hex strings should contain only 0-9 and A-F characters</span>';
+        }
+    },
+    
+    verify: (args) => {
+        if (!args[0]) return 'Usage: verify <code>\n\n<span class="success">Tip: Look for verification codes or passwords in the project files</span>';
+        
+        const code = args[0].toUpperCase();
+        
+        // Mana Valley solution
+        if (code === 'FLOW_STATE_ALPHA' && !gameState.projects.mana_valley.solved) {
+            gameState.projects.mana_valley.solved = true;
+            gameState.projects.burger_riot.locked = false;
+            gameState.terminalUnlocked = true;
+            solvedPuzzles.push('MANA');
+            unlockedCommands.push('grep', 'decode', 'verify');
+            return `<span class="success">✓ MANA VALLEY SOLVED!</span>
+
+Terminal access granted.
+New commands unlocked: grep, decode, verify
+Burger Riot project is now accessible.
+
+The energy flows through you...
+
+<span class="warning">Side puzzles may contain hints for future challenges.</span>
+<span class="success">Progress: ${solvedPuzzles.length}/3 main puzzles solved</span>`;
+        }
+        
+        // Burger Riot solution  
+        if (code === 'HOTSTOVE' && gameState.projects.mana_valley.solved && !gameState.projects.burger_riot.solved) {
+            gameState.projects.burger_riot.solved = true;
+            gameState.projects.indie_dev_500.locked = false;
+            solvedPuzzles.push('RIOT');
+            unlockedCommands.push('decrypt', 'status');
+            return `<span class="success">✓ BURGER RIOT SOLVED!</span>
+
+The rhythm was the key all along.
+Indie Dev 500 project is now accessible.
+New commands unlocked: decrypt, status
+
+The patterns are becoming clearer...
+
+<span class="warning">The archive folder may hold the final pieces...</span>
+<span class="success">Progress: ${solvedPuzzles.length}/3 main puzzles solved</span>`;
+        }
+        
+        return `<span class="error">Invalid verification code or puzzle already solved.</span>
+
+<span class="warning">Make sure you:</span>
+  - Have the correct code format
+  - Haven't already solved this puzzle
+  - Are solving puzzles in order (check "status" command)`;
+    },
+        
+    decrypt: (args) => {
+        if (solvedPuzzles.length < 2) {
+            return 'Decrypt command not available yet. Solve more puzzles.';
+        }
+        
+        if (!args[0]) return 'Usage: decrypt <key>';
+        
+        const key = args[0].toUpperCase();
+        const expectedKey = `FLOW_STATE_ALPHA_HOTSTOVE_${sessionId.toUpperCase()}`;
+        
+        if (key === expectedKey) {
+            gameState.projects.indie_dev_500.solved = true;
+            solvedPuzzles.push('DEV500');
+            
+            const passphrase = generatePassphrase();
+            return `<span class="success">✓ INDIE DEV 500 SOLVED!</span>
+<span class="success">✓✓✓ ALL CORE PUZZLES COMPLETE ✓✓✓</span>
+
+DECRYPTED DEV JOURNAL - Final Entry:
+=====================================
+
+Day 500 - The Truth
+
+All my games were connected from the start.
+Mana Valley taught us about FLOW.
+Burger Riot taught us about RHYTHM.  
+Indie Dev 500 taught us about PERSISTENCE.
+
+But they're all expressions of the same thing:
+CREATIVE ENERGY.
+
+The "Mana" was never just a game mechanic.
+It's the force that drives creation itself.
+
+Every line of code, every pixel of art,
+every sound effect, every playtest...
+It's all Mana flowing through the developer.
+
+And now you've proven you have it too.
+
+Your unique completion passphrase:
+<span class="glitch success">${passphrase}</span>
+
+Send this to the developer to prove your journey.
+This passphrase is unique to YOUR path through the terminal.
+
+${discoveredSecrets.length >= 3 ? '\n<span class="warning">★ COMPLETIONIST BONUS: You explored the side projects!\nThe archive holds deeper truths for those who seek...</span>' : ''}
+
+Thank you for playing.
+The flow continues...
+
+=====================================`;
+        }
+        
+        return `<span class="error">Decryption failed. Invalid key format.</span>
+Expected format: MANA_VALLEY_ANSWER_BURGER_RIOT_ANSWER_SESSION_ID`;
+    },
+    
+    status: () => {
+        if (solvedPuzzles.length < 2) {
+            return 'Status command not available yet.';
+        }
+        
+        let output = '\n=== PUZZLE STATUS ===\n\n';
+        output += 'Main Puzzles:\n';
+        output += `  Mana Valley: ${gameState.projects.mana_valley.solved ? '✓ SOLVED' : '✗ Unsolved'}\n`;
+        output += `  Burger Riot: ${gameState.projects.burger_riot.solved ? '✓ SOLVED' : '✗ Unsolved'}\n`;
+        output += `  Indie Dev 500: ${gameState.projects.indie_dev_500.solved ? '✓ SOLVED' : '✗ Unsolved'}\n`;
+        output += `\nPuzzles solved: ${solvedPuzzles.length}/3\n`;
+        output += `\nSide Puzzles Explored: ${discoveredSecrets.length}\n`;
+        output += `Session ID: ${sessionId}\n`;
+        
+        if (discoveredSecrets.length >= 3) {
+            output += '\n<span class="success">★ You\'ve explored enough to unlock hints! Type "hints"</span>';
+        }
+        
+        return output;
+    },
+    
+    hints: () => {
+        if (discoveredSecrets.length < 3) {
+            return 'Explore more side projects to unlock hints.\nTry: pixel_labs, simons_hallway, mana_god, suspended, desktop_village';
+        }
+        
+        let output = '\n=== UNLOCKED HINTS ===\n\n';
+        
+        if (discoveredSecrets.includes('pixel_labs')) {
+            output += '<span class="success">★ Pixel Labs Hint:</span>\n';
+            output += '  Coordinates are KEY. Row and Column numbers\n';
+            output += '  can be converted to letters using the alphabet.\n';
+            output += '  Position (4,13) = Row 4, Column 13\n\n';
+        }
+        
+        if (discoveredSecrets.includes('simons_hallway')) {
+            output += '<span class="success">★ Simon\'s Hallway Hint:</span>\n';
+            output += '  Timing patterns = Morse code!\n';
+            output += '  0.5s = dot (.), 2.0s = dash (-)\n';
+            output += '  Apply this to Burger Riot timestamps!\n\n';
+        }
+        
+        if (discoveredSecrets.includes('mana_god')) {
+            output += '<span class="success">★ Mana God Hint:</span>\n';
+            output += '  The same coordinates appear across ALL projects.\n';
+            output += '  They\'re not random. They spell something.\n';
+            output += '  Use row as letter position (A=1, B=2, ...)\n\n';
+        }
+        
+        if (discoveredSecrets.includes('suspended')) {
+            output += '<span class="success">★ Suspended Hint:</span>\n';
+            output += '  Chaos has rhythm. Destruction has pattern.\n';
+            output += '  The chaos intervals match morse code timing.\n\n';
+        }
+        
+        if (discoveredSecrets.includes('desktop_village')) {
+            output += '<span class="success">★ Desktop Village Hint:</span>\n';
+            output += '  Cross-reference timestamps across projects.\n';
+            output += '  The memory leak is INTENTIONAL.\n\n';
+        }
+        
+        output += 'These hints should help with the main puzzles!\n';
+        output += 'Remember: Everything is connected.\n';
+        
+        return output;
+    },
+    
+    grep: (args) => {
+        if (!gameState.terminalUnlocked) {
+            return 'Command not available yet.';
+        }
+        return 'grep: Basic implementation - try reading files with cat instead';
+    }
+};
+
+function generatePassphrase() {
+    const checksum = solvedPuzzles.join('').split('').reduce((a, b) => {
+        return ((a << 5) - a + b.charCodeAt(0)) | 0;
+    }, 0);
+    const bonus = discoveredSecrets.length >= 5 ? '-COMPLETE' : '';
+    return `MANA-${sessionId}-${Math.abs(checksum).toString(36).toUpperCase()}${bonus}`;
 }
+
+// Terminal input handling
+const input = document.getElementById('command-input');
+const outputContainer = document.getElementById('output-container');
+
+input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const command = input.value.trim();
+        if (command) {
+            commandHistory.push(command);
+            historyIndex = commandHistory.length;
+            processCommand(command);
+            input.value = '';
+        }
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (historyIndex > 0) {
+            historyIndex--;
+            input.value = commandHistory[historyIndex];
+        }
+    } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            input.value = commandHistory[historyIndex];
+        } else {
+            historyIndex = commandHistory.length;
+            input.value = '';
+        }
+    }
+});
+
+function processCommand(commandStr) {
+    // Display the command
+    const commandDiv = document.createElement('div');
+    commandDiv.className = 'prompt';
+    commandDiv.textContent = commandStr;
+    outputContainer.appendChild(commandDiv);
+
+    // Parse and execute
+    const parts = commandStr.split(' ');
+    const cmd = parts[0].toLowerCase();
+    const args = parts.slice(1);
+
+    const outputDiv = document.createElement('div');
+    outputDiv.className = 'output';
+
+    if (commands[cmd]) {
+        const result = commands[cmd](args);
+        outputDiv.innerHTML = result;
+    } else {
+        outputDiv.innerHTML = `<span class="error">Command not found: ${cmd}</span>
+Type 'help' for available commands.`;
+    }
+
+    outputContainer.appendChild(outputDiv);
+    
+    // Scroll to bottom
+    const terminal = document.getElementById('terminal');
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+// Auto-focus input
+document.addEventListener('click', () => {
+    input.focus();
+});
+
+// Initialize - load filesystem then setup console
+loadFileSystem().then(() => {
+    // Console Easter Egg
+    console.log('%c🔮 AIA Developer Terminal', 'color: #00ff00; font-size: 20px; font-weight: bold;');
+    console.log('%cYou found the console! But the real puzzles are in the terminal...', 'color: #00aa00;');
+    console.log('%cHint: The hex values in the files are important.', 'color: #006600;');
+    console.log('%cHint: Patterns exist across multiple files.', 'color: #006600;');
+    console.log('%cHint: Side projects contain hints for main puzzles.', 'color: #006600;');
+    console.log('%cHint: Your session ID is part of the final answer.', 'color: #006600;');
+    console.log(`%cYour Session: ${sessionId}`, 'color: #00ff00; font-weight: bold;');
+});

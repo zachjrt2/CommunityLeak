@@ -141,8 +141,7 @@ body {
 
 input {
     background: rgba(0, 255, 0, 0.05);
-    border: 1px solid #00ff00;
-    border-left: 3px solid #00ff00;
+    border: none;
     color: #00ffaa;
     font-family: 'Courier New', monospace;
     font-size: 16px;
@@ -151,20 +150,22 @@ input {
     text-shadow: 0 0 8px #00ffaa, 0 0 15px #00ff00;
     padding: 8px 10px;
     margin-top: 5px;
-    animation: input-pulse 2s ease-in-out infinite;
+
 }
 
 @keyframes input-pulse {
     0%, 100% { 
-        box-shadow: 0 0 5px #00ff00, inset 0 0 5px rgba(0, 255, 0, 0.1);
+        box-shadow: 0 0 1px #00ff00, inset 0 0 1px rgba(0, 255, 0, 0.1);
     }
     50% { 
-        box-shadow: 0 0 15px #00ff00, inset 0 0 10px rgba(0, 255, 0, 0.2);
+        box-shadow: 0 0 3px #00ff00, inset 0 0 3px rgba(0, 255, 0, 0.2);
     }
 }
 
 .cursor {
     animation: blink 1s infinite;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 @keyframes blink {
