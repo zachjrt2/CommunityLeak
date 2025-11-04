@@ -75,29 +75,28 @@ const gameState = {
 
 // Load filesystem - embedded data
 async function loadFileSystem() {
-    fileSystem = {
-        "mana_valley/concept.txt": `
-MANA VALLEY - Core Concept Document
-====================================
-Date: 2019-04-15
-Status: ACTIVE DEVELOPMENT
+  fileSystem = {
+    "mana_valley/concept.txt": `<span class="file-header">MANA VALLEY - Core Concept Document</span>
+<span class="file-divider">====================================</span>
+<span class="file-timestamp">Date: 2019-04-15</span>
+<span class="file-warning">Status: ACTIVE DEVELOPMENT</span>
 
-Core Mechanic: Resource management meets exploration
-Theme: Energy as a living, flowing entity
-Inspiration: Stardew Valley, Breath of the Wild
+<span class="file-subheader">Core Mechanic:</span> Resource management meets exploration
+<span class="file-subheader">Theme:</span> Energy as a living, flowing entity
+<span class="file-subheader">Inspiration:</span> Stardew Valley, Breath of the Wild
 
-The player must balance:
+<span class="file-note">The player must balance:</span>
 - Mana collection (primary resource)
 - Valley exploration (finding new places)
 - Entity relationships (diplomacy/combat)
 
-DESIGN PILLARS:
-1. Flow - Energy should feel alive
-2. Choice - Multiple paths to victory
-3. Consequence - Actions ripple through the valley
+<span class="file-header">DESIGN PILLARS:</span>
+1. <span class="file-warning">Flow</span> - Energy should feel alive
+2. <span class="file-warning">Choice</span> - Multiple paths to victory
+3. <span class="file-warning">Consequence</span> - Actions ripple through the valley
 
-Color Palette Research:
-#434F52 - Primary
+<span class="file-subheader">Color Palette Research:</span>
+<span class="code-block">#434F52 - Primary
 #455354 - Secondary
 #544845 - Cave Rocks
 #45414C - Witches heart
@@ -111,271 +110,265 @@ Color Palette Research:
 #4B4559 - Cave Lighting
 #434F52 - Amberfin Ash
 #455253 - Mana Essence
-#554E44 - Ocean Floor (Night)
+#554E44 - Ocean Floor (Night)</span>
 
-Developer note:
-These hex values are not random — they hide letters if read as ASCII.
+<span class="file-warning">Developer note:</span>
+<span class="file-note">These hex values are not random — they hide letters if read as ASCII.
 Each pair of digits (e.g., 4D → M) forms a word.
 
 If decoded correctly, they reveal a keyword needed for the energy system.
 Try starting with the Primary color and follow the same process for the others.
-When finished, check the system logs for where to use it.
-
+When finished, check the system logs for where to use it.</span>
 `,
 
-        "mana_valley/design_doc.md": `
-## World Building
+    "mana_valley/design_doc.md": `<span class="file-header">## World Building</span>
 
-The valley exists in multiple states simultaneously.
-Players experience different "frequencies" of reality.
+<span class="file-note">The valley exists in multiple states simultaneously.
+Players experience different "frequencies" of reality.</span>
 
-Stage 1:
+<span class="file-subheader">Stage 1:</span>
 Cave exploration should expand the usability of the map and lay foundations for
 mining.
-[Implement]
+<span class="file-warning">[Implement]</span>
     - Cave Rocks
     - Cave Lighting
-Stage 2:
+
+<span class="file-subheader">Stage 2:</span>
 Nona needs some more story and her house could use a little landscaping.
-[Implement] 
+<span class="file-warning">[Implement]</span> 
     - Nona's Amulet
     - Basic Rocks
-Stage 3:
+
+<span class="file-subheader">Stage 3:</span>
 Redo the color balancing on the world to help unify the design language.
-[Color Considerations]
+<span class="file-warning">[Color Considerations]</span>
     - Ocean Floor (Night)
     - Mana Essence
     - Primary
     - Secondary
     - Pomplu Leaf
-Stage 4:
+
+<span class="file-subheader">Stage 4:</span>
 New inventory system to help players gather and interact with items in the world
-[Items to make stackable]
+<span class="file-warning">[Items to make stackable]</span>
     - Corrupted Mana
     - Pomplu Soul
     - Amberfin Ash
     - Witches heart
     - Field Grain
 
-Internal note:
-The Alpha Flow shows unique synchronization behavior.
-Terminal access for Alpha testing requires correct state identification.
+<span class="file-note">Internal note:</span>
+<span class="file-warning">The Alpha Flow shows unique synchronization behavior.
+Terminal access for Alpha testing requires correct state identification.</span>
 
-## Cross-Project Notes
-Strange... the mana flow patterns match the clone distribution in Pixel Labs.
-Is there a connection? Check .archive for memory fragments.
+<span class="file-header">## Cross-Project Notes</span>
+<span class="file-error">Strange... the mana flow patterns match the clone distribution in Pixel Labs.
+Is there a connection? Check .archive for memory fragments.</span>
 `,
 
-        "mana_valley/energy_system.log": `
-[2023-04-15 14:23:11] Energy flow initialized
-[2023-04-15 14:23:12] Mana pools spawned: 12
-[2023-04-15 14:23:45] Player collected mana: +50 units
+    "mana_valley/energy_system.log": `<span class="file-timestamp">[2023-04-15 14:23:11]</span> Energy flow initialized
+<span class="file-timestamp">[2023-04-15 14:23:12]</span> Mana pools spawned: 12
+<span class="file-timestamp">[2023-04-15 14:23:45]</span> Player collected mana: +50 units
 
-[INFO] Decoding attempt: Using color data from concept.txt
-Result: (#4D414E) → "MAN"
-Additional values pending analysis.
+<span class="file-warning">[INFO]</span> Decoding attempt: Using color data from concept.txt
+<span class="file-note">Result: (#4D414E) → "MAN"
+Additional values pending analysis.</span>
 
-[NOTE] Cross-reference remaining color hex codes with the pattern above.
-Each decoded word may combine to form an instruction or key phrase.
+<span class="file-warning">[NOTE]</span> Cross-reference remaining color hex codes with the pattern above.
+<span class="file-note">Each decoded word may combine to form an instruction or key phrase.</span>
 `,
 
-        "mana_valley/.hidden_notes": `
-Dev Notes (Private)
-====================
+    "mana_valley/.hidden_notes": `<span class="file-header">Dev Notes (Private)</span>
+<span class="file-divider">====================</span>
 
-Confirmed: The color codes in concept.txt are a cipher. 
-           https://www.rapidtables.com/convert/number/hex-to-ascii.html
+<span class="file-warning">Confirmed:</span> The color codes in concept.txt are a cipher. 
+           <span class="file-note">https://www.rapidtables.com/convert/number/hex-to-ascii.html</span>
 
-Decoded sequence so far:
-    #544845 → THE
-    #4B4559... (still decoding, may spell "KEY")
-The words form a phrase related to the system’s key. But what order should the
-colors come in. Perhaps design docs give some insight.
+<span class="file-subheader">Decoded sequence so far:</span>
+<span class="code-block">    #544845 → THE
+    #4B4559... (still decoding, may spell "KEY")</span>
 
-Final access format:
-[WORD]_[WORD]_[WORD]
+<span class="file-note">The words form a phrase related to the system's key. But what order should the
+colors come in. Perhaps design docs give some insight.</span>
 
-Check the latest energy_system.log entry for which branch is currently active.
-That should tell you what goes in the brackets.
+<span class="file-warning">Final access format:</span>
+<span class="file-encrypted">[WORD]_[WORD]_[WORD]</span>
+
+<span class="file-note">Check the latest energy_system.log entry for which branch is currently active.
+That should tell you what goes in the brackets.</span>
 `,
 
-        "burger_riot/playtest_report.txt": `
-BURGER RIOT - Playtesting Session #47
-=====================================
-Date: 2023-06-22
+    "burger_riot/playtest_report.txt": `<span class="file-header">BURGER RIOT - Playtesting Session #47</span>
+<span class="file-divider">=====================================</span>
+<span class="file-timestamp">Date: 2023-06-22</span>
 Build: v0.8.3-alpha
 
-PLAYTESTER: Mike K.
-Session Duration: 23 minutes
+<span class="file-subheader">PLAYTESTER:</span> Mike K.
+<span class="file-subheader">Session Duration:</span> 23 minutes
 
-Timestamp Log:
-00:00 - Game start, tutorial skipped
-00:15 - First burger assembled
-00:43 - Customer #1 satisfied
-01:12 - Speed boost activated
-01:58 - "Riot mode" triggered (chaos event)
-02:34 - Multi-order juggling (3 simultaneous)
-03:11 - First failure (burnt burger)
-03:45 - Recovery, back to normal speed
-04:23 - High score achieved: 1,250 points
+<span class="file-subheader">Timestamp Log:</span>
+<span class="file-timestamp">00:00</span> - Game start, tutorial skipped
+<span class="file-timestamp">00:15</span> - First burger assembled
+<span class="file-timestamp">00:43</span> - Customer #1 satisfied
+<span class="file-timestamp">01:12</span> - Speed boost activated
+<span class="file-timestamp">01:58</span> - <span class="file-warning">"Riot mode" triggered</span> (chaos event)
+<span class="file-timestamp">02:34</span> - Multi-order juggling (3 simultaneous)
+<span class="file-timestamp">03:11</span> - <span class="file-error">First failure</span> (burnt burger)
+<span class="file-timestamp">03:45</span> - Recovery, back to normal speed
+<span class="file-timestamp">04:23</span> - <span class="file-warning">High score achieved: 1,250 points</span>
 
-BUGS FOUND:
+<span class="file-header">BUGS FOUND:</span>
 - Burger sometimes clips through counter
 - Sound effect delay on "perfect" orders
 - Riot mode difficulty spike too harsh
 
-NOTES:
-Mike mentioned the game has a "rhythm" to it.
-The timestamps feel musical? Need to analyze.
+<span class="file-header">NOTES:</span>
+<span class="file-note">Mike mentioned the game has a "rhythm" to it.
+The timestamps feel musical? Need to analyze.</span>
 
-[INTERNAL]: Check riot_trigger_sequence.wav
-Pattern analysis suggests morse-like intervals...
+<span class="file-warning">[INTERNAL]:</span> Check riot_trigger_sequence.wav
+<span class="file-note">Pattern analysis suggests morse-like intervals...</span>
 
-Funny coincidence: The chaos in riot mode feels similar to 
-the destruction mechanics in Suspended. Same energy, different context.
+<span class="file-note">Funny coincidence: The chaos in riot mode feels similar to 
+the destruction mechanics in Suspended. Same energy, different context.</span>
 `,
 
-        "burger_riot/bug_log.dat": `
-BUG DATABASE - BURGER RIOT
-=========================
+    "burger_riot/bug_log.dat": `<span class="file-header">BUG DATABASE - BURGER RIOT</span>
+<span class="file-divider">=========================</span>
 
-BUG-001: Physics glitch in burger assembly
+<span class="file-warning">BUG-001:</span> Physics glitch in burger assembly
 Severity: LOW
 Status: FIXED
 
-BUG-002: Audio desync during riot mode  
+<span class="file-warning">BUG-002:</span> Audio desync during riot mode  
 Severity: MEDIUM
 Status: INVESTIGATING
 
-The audio desync is weird. It's like there's a PATTERN:
-Long pause, short pause, short, long, short, long...
+<span class="file-note">The audio desync is weird. It's like there's a PATTERN:
+Long pause, short pause, short, long, short, long...</span>
 
-Wait, that's not a bug. That's MORSE CODE.
+<span class="file-error">Wait, that's not a bug. That's MORSE CODE.</span>
 
-Decoded from riot mode sound gaps:
-... --- ... (SOS? No, wait...)
+<span class="file-subheader">Decoded from riot mode sound gaps:</span>
+<span class="code-block">... --- ... (SOS? No, wait...)</span>
 
-Actually decoded (using riot mode timestamp intervals):
-.... --- -
-... - --- ...- .
+<span class="file-warning">Actually decoded (using riot mode timestamp intervals):</span>
+<span class="code-block">.... --- -
+... - --- ...- .</span>
 
-Password for next level? 
+<span class="file-note">Password for next level?</span> 
 
-BUG-003: Customer AI pathfinding error
+<span class="file-warning">BUG-003:</span> Customer AI pathfinding error
 Severity: LOW  
 Status: BACKLOG
 
-[ENCRYPTED SECTION - Use 'decrypt' command with key]
-U2FsdGVkX1+vupppZksvRf5pq5g5XjFRlipRkwB0K1Y=
+<span class="file-encrypted">[ENCRYPTED SECTION - Use 'decrypt' command with key]
+U2FsdGVkX1+vupppZksvRf5pq5g5XjFRlipRkwB0K1Y=</span>
 `,
 
-        "burger_riot/timestamp_analysis.csv": `
-Time,Event,Duration
-00:00,bun_place,1.15s,-
-00:01.15,lettuce_add,1.15s,-
-00:02.3,tomato_slice,1.15s,-
-00:03.45,cheese_melt,1.15s,-
-00:04.6,patty_grill,2.3s,-
-00:06.9,bacon_fry,2.3s,-
-00:09.2,burger_flip,2.3s,-
-00:11.5,entity error,4.6s,-
-00:16.1,pickle_layer,1.15s,-
-00:17.25,onion_chop,1.15s,-
-00:18.4,sauce_drizzle,1.15s,-
-00:19.55,fries_drop,2.3s,-
-00:21.85,shake_stir,2.3s,-
-00:24.15,customer_cheer,2.3s,-
-00:26.45,nugget_toss,1.15s,-
-00:27.6,drink_pour,1.15s,-
-00:28.75,order_ring,1.15s,-
-00:29.9,combo_ready,2.3s,-
-00:32.2,bell_ring,1.15s,-
+    "burger_riot/timestamp_analysis.csv": `<span class="file-header">Time,Event,Duration</span>
+<span class="file-timestamp">00:00</span>,bun_place,1.15s,-
+<span class="file-timestamp">00:01.15</span>,lettuce_add,1.15s,-
+<span class="file-timestamp">00:02.3</span>,tomato_slice,1.15s,-
+<span class="file-timestamp">00:03.45</span>,cheese_melt,1.15s,-
+<span class="file-timestamp">00:04.6</span>,patty_grill,2.3s,-
+<span class="file-timestamp">00:06.9</span>,bacon_fry,2.3s,-
+<span class="file-timestamp">00:09.2</span>,burger_flip,2.3s,-
+<span class="file-timestamp">00:11.5</span>,<span class="file-error">entity error</span>,4.6s,-
+<span class="file-timestamp">00:16.1</span>,pickle_layer,1.15s,-
+<span class="file-timestamp">00:17.25</span>,onion_chop,1.15s,-
+<span class="file-timestamp">00:18.4</span>,sauce_drizzle,1.15s,-
+<span class="file-timestamp">00:19.55</span>,fries_drop,2.3s,-
+<span class="file-timestamp">00:21.85</span>,shake_stir,2.3s,-
+<span class="file-timestamp">00:24.15</span>,customer_cheer,2.3s,-
+<span class="file-timestamp">00:26.45</span>,nugget_toss,1.15s,-
+<span class="file-timestamp">00:27.6</span>,drink_pour,1.15s,-
+<span class="file-timestamp">00:28.75</span>,order_ring,1.15s,-
+<span class="file-timestamp">00:29.9</span>,combo_ready,2.3s,-
+<span class="file-timestamp">00:32.2</span>,bell_ring,1.15s,-
 
-Pattern Analysis:
-Intervals between events: 1.15, 1.15, 1.15, 1.15, 2.3, 2.3, 2.3, 4.6, 
-1.15, 1.15, 1.15, 2.3, 2.3, 2.3, 1.15, 1.15, 1.15, 2.3 1.15 
-Perhaps this number is offset by a constant value.
+<span class="file-subheader">Pattern Analysis:</span>
+<span class="file-warning">Intervals between events:</span> <span class="code-block">1.15, 1.15, 1.15, 1.15, 2.3, 2.3, 2.3, 4.6, 
+1.15, 1.15, 1.15, 2.3, 2.3, 2.3, 1.15, 1.15, 1.15, 2.3 1.15</span>
+<span class="file-note">Perhaps this number is offset by a constant value.
 
 Still doesn't make sense. Need more coffee...
-Or maybe need to look at Desktop Village defense patterns?
+Or maybe need to look at Desktop Village defense patterns?</span>
 `,
 
-        "indie_dev_500/README.txt": `
-INDIE DEV 500 - The Journey
-============================
+    "indie_dev_500/README.txt": `<span class="file-header">INDIE DEV 500 - The Journey</span>
+<span class="file-divider">============================</span>
 
-A game about making games.
+<span class="file-note">A game about making games.
 A race to be remembered.
 7 developers.
-Infinite coffee.
+Infinite coffee.</span>
 
-This project is a love letter to the indie dev grind.
+<span class="file-subheader">This project is a love letter to the indie dev grind.</span>
 Every bot made by a contestent represents a real struggle:
-- Resource management = Time & complexity
-- Physics Unpredictabilaty = Life happening  
-- Node structure = Learning new skills
-- Time Limit = Crunch time
+- <span class="file-warning">Resource management</span> = Time & complexity
+- <span class="file-warning">Physics Unpredictabilaty</span> = Life happening  
+- <span class="file-warning">Node structure</span> = Learning new skills
+- <span class="file-warning">Time Limit</span> = Crunch time
 
-The game was built to break you.
+<span class="file-error">The game was built to break you.
 It knows when you're struggling.
-It adapts.
+It adapts.</span>
 
-TO DECRYPT THE DEV JOURNAL:
+<span class="file-header">TO DECRYPT THE DEV JOURNAL:</span>
 1. Find the encryption key (it's hidden in the other projects)
 2. Use the decrypt_tool.sh script
 3. Prepare yourself for the truth
 
-Hint: The key is made of ANSWERS you've already found.
+<span class="file-warning">Hint:</span> <span class="file-note">The key is made of ANSWERS you've already found.</span>
 
-Note: The archive folder has strange memory fragments.
+<span class="file-note">Note: The archive folder has strange memory fragments.
 They talk about connections between all the projects.
-Maybe that's the real final puzzle?
+Maybe that's the real final puzzle?</span>
 `,
 
-        "indie_dev_500/dev_journal.enc": `
------BEGIN ENCRYPTED JOURNAL-----
-Day 1-100: [ENCRYPTED]
-U2FsdGVkX19K3vNHGSc4bGAHN2yTpKSqE+vMQhP5rWE=
+    "indie_dev_500/dev_journal.enc": `<span class="file-encrypted">-----BEGIN ENCRYPTED JOURNAL-----</span>
+<span class="file-warning">Day 1-100:</span> <span class="file-encrypted">[ENCRYPTED]
+U2FsdGVkX19K3vNHGSc4bGAHN2yTpKSqE+vMQhP5rWE=</span>
 
-Day 101-200: [ENCRYPTED]  
-U2FsdGVkX1+2Jz8vK4cX9fYqHbR+pqKsE9kPxHm8Gf0=
+<span class="file-warning">Day 101-200:</span> <span class="file-encrypted">[ENCRYPTED]  
+U2FsdGVkX1+2Jz8vK4cX9fYqHbR+pqKsE9kPxHm8Gf0=</span>
 
-Day 201-300: [ENCRYPTED]
-U2FsdGVkX1/Hk9mR4pFx2NbQ+KzPqjRsT8vXnYm3Dc4=
+<span class="file-warning">Day 201-300:</span> <span class="file-encrypted">[ENCRYPTED]
+U2FsdGVkX1/Hk9mR4pFx2NbQ+KzPqjRsT8vXnYm3Dc4=</span>
 
-Day 301-400: [ENCRYPTED]
-U2FsdGVkX1+Ym2nT5qGy4OcR+LzQskUtV9wYoZn4Ee8=
+<span class="file-warning">Day 301-400:</span> <span class="file-encrypted">[ENCRYPTED]
+U2FsdGVkX1+Ym2nT5qGy4OcR+LzQskUtV9wYoZn4Ee8=</span>
 
-Day 401-500: [PARTIALLY READABLE]
-I can't believe I made it. 500 days.
-The game is done. But something happened...
+<span class="file-warning">Day 401-500:</span> <span class="file-warning">[PARTIALLY READABLE]</span>
+<span class="file-note">I can't believe I made it. 500 days.
+The game is done. But something happened...</span>
 
-All my projects started... connecting.
+<span class="file-error">All my projects started... connecting.
 The mana system from Valley.
 The rhythm from Riot.  
 The persistence from Dev500.
 
 They're all the same game.
-They've ALWAYS been the same game.
+They've ALWAYS been the same game.</span>
 
-The core truth: [REQUIRES FULL DECRYPTION]
+<span class="file-warning">The core truth:</span> <span class="file-encrypted">[REQUIRES FULL DECRYPTION]</span>
 
-To unlock this, you need the MASTER_KEY.
-Combine the solutions from:
+<span class="file-note">To unlock this, you need the MASTER_KEY.
+Combine the solutions from:</span>
 - Mana Valley answer
 - Burger Riot password
 - Your session verification code
 
-Format: VALLEY_RIOT_[SESSION_ID]
------END ENCRYPTED JOURNAL-----
+<span class="file-warning">Format:</span> <span class="file-encrypted">VALLEY_RIOT_[SESSION_ID]</span>
+<span class="file-encrypted">-----END ENCRYPTED JOURNAL-----</span>
 `,
 
-        "indie_dev_500/decrypt_tool.sh": `
-#!/bin/bash
-# Decryption Tool for Dev Journal
-# Usage: ./decrypt_tool.sh <encrypted_file> <key>
+    "indie_dev_500/decrypt_tool.sh": `<span class="file-header">#!/bin/bash</span>
+<span class="file-note"># Decryption Tool for Dev Journal
+# Usage: ./decrypt_tool.sh <encrypted_file> <key></span>
 
-decrypt() {
+<span class="code-block">decrypt() {
     local file=$1
     local key=$2
     
@@ -389,26 +382,25 @@ decrypt() {
         echo "ERROR: Invalid decryption key"
         echo "Key format should be: [MANA_VALLEY_SOLUTION]_[BURGER_RIOT_PASSWORD]_[SESSION]"
     fi
-}
+}</span>
 
-# The real decryption happens when you submit the final passphrase
-# This tool is just a hint to the puzzle structure
+<span class="file-note"># The real decryption happens when you submit the final passphrase
+# This tool is just a hint to the puzzle structure</span>
 
-echo "Hint: Look at the hex values. Look at the intervals."
+<span class="file-warning">echo "Hint: Look at the hex values. Look at the intervals."
 echo "Hint: The answer flows through all projects."
-echo "Hint: Your unique session is part of the key"
+echo "Hint: Your unique session is part of the key"</span>
 `,
 
-        "pixel_labs/lab_blueprints.txt": `
-PIXEL LABS - Laboratory Design
-================================
-Project Status: ARCHIVED
-Last Modified: 2022-11-08
+    "pixel_labs/lab_blueprints.txt": `<span class="file-header">PIXEL LABS - Laboratory Design</span>
+<span class="file-divider">================================</span>
+<span class="file-warning">Project Status: ARCHIVED</span>
+<span class="file-timestamp">Last Modified: 2022-11-08</span>
 
-Purpose: Create automated lab to supply clones for various game systems
+<span class="file-subheader">Purpose:</span> Create automated lab to supply clones for various game systems
 
-LAB LAYOUT:
-    +---+---+---+---+
+<span class="file-header">LAB LAYOUT:</span>
+<span class="ascii-art">    +---+---+---+---+
     | 1 | 2 | 3 | 4 |    
 +---+---+---+---+---+
 | 1 | A | B | C | D |
@@ -424,87 +416,84 @@ LAB LAYOUT:
 | 6 | U | V | W | X |
 +---+---+---+---+---+
 | 7 | Y | Z | ! | _ |
-+---+---+---+---+---+
++---+---+---+---+---+</span>
 
-Clone Distribution Pattern:
+<span class="file-subheader">Clone Distribution Pattern:</span>
 Row 1: Management & Control
 Row 2: Production & Processing
 Row 3: Storage & Distribution
 
-Optimal flow: A->E->I (vertical cascade)
-But somehow clones prefer: A->B->F->G->K (diagonal?)
+<span class="file-note">Optimal flow: A->E->I (vertical cascade)
+But somehow clones prefer: A->B->F->G->K (diagonal?)</span>
 
-This pattern... it matches something.
-Check clone_data.csv for coordinates.
+<span class="file-error">This pattern... it matches something.
+Check clone_data.csv for coordinates.</span>
 `,
 
-        "pixel_labs/clone_data.csv": `
-CloneID,SpawnX,SpawnY,Efficiency,Notes
+    "pixel_labs/clone_data.csv": `<span class="file-header">CloneID,SpawnX,SpawnY,Efficiency,Notes</span>
 C001,4,1,87%,First generation
 C002,1,2,92%,Improved genome
 C003,6,2,89%,Standard production
 C004,4,1,91%,Duplicate spawn point?
 C005,1,2,94%,High performer
 
-Wait, these coordinates...
+<span class="file-warning">Wait, these coordinates...</span>
 
-(2,2) (3,4) (4,3) (6,3) 
+<span class="code-block">(2,2) (3,4) (4,3) (6,3) 
 (7,4)
 (5,3) (5,4) (1,1) (5,4) (2,1)
 (7,4) 
-(1,1) (3,4) (4,4) (2,4) (1,1)
+(1,1) (3,4) (4,4) (2,4) (1,1)</span>
 
-If this is a grid reference system...
-And if we convert to letters (A=1, B=2, etc)...
+<span class="file-note">If this is a grid reference system...
+And if we convert to letters (A=1, B=2, etc)...</span>
 
-4,1 = D,A
+<span class="code-block">4,1 = D,A
 1,2 = A,B
 6,2 = F,B
 4,1 = D,A  
-1,2 = A,B
+1,2 = A,B</span>
 
-DA BA FB DA BA? No... That can't be it
+<span class="file-note">DA BA FB DA BA? No... That can't be it
 
 Or maybe it's row,col for a keyboard layout?
-Or... coordinate system for Mana Valley energy pools?
+Or... coordinate system for Mana Valley energy pools?</span>
 
-This is connected to the main puzzle somehow. I'm sure I can find something else 
-in the pixel labs notes connected to this, check the research notes.
+<span class="file-error">This is connected to the main puzzle somehow. I'm sure I can find something else 
+in the pixel labs notes connected to this, check the research notes.</span>
 `,
 
-        "pixel_labs/research_notes.md": `
-# Research Log - Clone Efficiency
+    "pixel_labs/research_notes.md": `<span class="file-header"># Research Log - Clone Efficiency</span>
 
-## Discovery
-The clones aren't just following programmed paths.
-They're exhibiting emergent behavior.
+<span class="file-subheader">## Discovery</span>
+<span class="file-error">The clones aren't just following programmed paths.
+They're exhibiting emergent behavior.</span>
 
-## Pattern Recognition
-When I map their movement patterns, they form LETTERS.
-Not random. Intentional.
+<span class="file-subheader">## Pattern Recognition</span>
+<span class="file-warning">When I map their movement patterns, they form LETTERS.
+Not random. Intentional.</span>
 
-## Hypothesis
-The lab simulation is leaking data from other projects.
-The clones are trying to communicate something.
+<span class="file-subheader">## Hypothesis</span>
+<span class="file-note">The lab simulation is leaking data from other projects.
+The clones are trying to communicate something.</span>
 
-## Hint for Future Me
-If you're stuck on coordinate systems in other projects,
-remember: Everything is connected through position data.
+<span class="file-subheader">## Hint for Future Me</span>
+<span class="file-warning">If you're stuck on coordinate systems in other projects,
+remember: Everything is connected through position data.</span>
 
-Row 4, Column 3 = ?
-Row 1, Column 4 = ?
+<span class="code-block">Row 4, Column 3 = ?
+Row 1, Column 4 = ?</span>
 
-Think GRID. Think ASCII. Think LETTERS.
+<span class="file-error">Think GRID. Think ASCII. Think LETTERS.</span>
 `,
 
-        "simons_hallway/direction_log.txt": `
-SIMON'S HALLWAY - Playtesting Directions
-=========================================
-Game: Follow verbal directions or die trying
-Difficulty: Brutal
+    "simons_hallway/direction_log.txt": `<span class="file-header">SIMON'S HALLWAY - Playtesting Directions</span>
+<span class="file-divider">=========================================</span>
+<span class="file-note">Game: Follow verbal directions or die trying
+Difficulty: Brutal</span>
 
-Test Session #23:
------------------
+<span class="file-subheader">Test Session #23:</span>
+<span class="file-divider">-----------------</span>
 Direction 1: "FORWARD 3 steps"
 Direction 2: "TURN LEFT"
 Direction 3: "FORWARD 5 steps"  
@@ -513,274 +502,266 @@ Direction 5: "BACKWARD 2 steps"
 Direction 6: "TURN LEFT"
 Direction 7: "FORWARD 1 step"
 
-Player died at Direction 5. Again.
+<span class="file-error">Player died at Direction 5. Again.</span>
 
-The timing between directions matters.
+<span class="file-warning">The timing between directions matters.</span>
 - Short pause: 0.5s
 - Medium pause: 1.0s
 - Long pause: 2.0s
 
-Pause Pattern (in seconds):
-0.5, 2.0, 0.5, 0.5, 2.0, 0.5, 2.0
+<span class="file-subheader">Pause Pattern (in seconds):</span>
+<span class="code-block">0.5, 2.0, 0.5, 0.5, 2.0, 0.5, 2.0</span>
 
-That's: SHORT, LONG, SHORT, SHORT, LONG, SHORT, LONG
+<span class="file-note">That's: SHORT, LONG, SHORT, SHORT, LONG, SHORT, LONG</span>
 
-Wait... is that MORSE CODE?
-Short = dot (.)
-Long = dash (-)
+<span class="file-error">Wait... is that MORSE CODE?</span>
+<span class="file-warning">Short = dot (.)
+Long = dash (-)</span>
 
-Pattern: . - . . - . -
+<span class="file-subheader">Pattern:</span> <span class="code-block">. - . . - . -</span>
 
-If I decode that... 
+<span class="file-note">If I decode that... 
 No wait, I need letter boundaries.
 
 Ugh, I'm overthinking this.
 But it FEELS like the rhythm puzzle in Burger Riot.
-Same energy. Pattern-based thinking.
+Same energy. Pattern-based thinking.</span>
 `,
 
-        "simons_hallway/failure_analysis.dat": `
-FAILURE ANALYSIS - Simon's Hallway
-===================================
+    "simons_hallway/failure_analysis.dat": `<span class="file-header">FAILURE ANALYSIS - Simon's Hallway</span>
+<span class="file-divider">===================================</span>
 
-Most Common Death Points:
-1. Direction 5 (Backward movement) - 67% deaths
-2. Direction 7 (Final step) - 21% deaths  
+<span class="file-subheader">Most Common Death Points:</span>
+1. Direction 5 (Backward movement) - <span class="file-error">67% deaths</span>
+2. Direction 7 (Final step) - <span class="file-warning">21% deaths</span>  
 3. Direction 3 (Forward 5) - 12% deaths
 
-Analysis:
-Players struggle with TIMING more than direction.
+<span class="file-subheader">Analysis:</span>
+<span class="file-note">Players struggle with TIMING more than direction.
 The game isn't about spatial awareness.
-It's about RHYTHM and PATTERN RECOGNITION.
+It's about RHYTHM and PATTERN RECOGNITION.</span>
 
-Recommendation: Add visual metronome?
+<span class="file-warning">Recommendation:</span> Add visual metronome?
 Or accept that this is a rhythm game disguised as a puzzle game.
 
-[DEV NOTE]: 
-The morse code interpretation was right.
+<span class="file-warning">[DEV NOTE]:</span> 
+<span class="file-error">The morse code interpretation was right.
 If you break the directions into beats...
 And map the pause durations to dots and dashes...
 
-You get a MESSAGE.
+You get a MESSAGE.</span>
 
-But I'm not going to spoil it here.
-Figure it out yourself, future puzzle solver.
+<span class="file-note">But I'm not going to spoil it here.
+Figure it out yourself, future puzzle solver.</span>
 
-Hint: Combine this with the timestamp intervals
-from Burger Riot. They're the SAME TYPE of puzzle.
+<span class="file-warning">Hint:</span> <span class="file-note">Combine this with the timestamp intervals
+from Burger Riot. They're the SAME TYPE of puzzle.</span>
 `,
 
-        "simons_hallway/.corridor_map": `
-     N
+    "simons_hallway/.corridor_map": `<span class="ascii-art">     N
      |
  W---+---E
      |
-     S
+     S</span>
 
-START: Center position
-GOAL: North exit
+<span class="file-subheader">START:</span> Center position
+<span class="file-subheader">GOAL:</span> North exit
 
-Successful Path Sequence:
-F F F L F F F F F R B B L F
+<span class="file-subheader">Successful Path Sequence:</span>
+<span class="code-block">F F F L F F F F F R B B L F</span>
 
-F=Forward, L=Left, R=Right, B=Back
+<span class="file-note">F=Forward, L=Left, R=Right, B=Back</span>
 
-But that's not the puzzle.
-The puzzle is the RHYTHM of the commands.
+<span class="file-warning">But that's not the puzzle.
+The puzzle is the RHYTHM of the commands.</span>
 
-Time between commands (ms):
-500, 2000, 500, 1000, 500, 2000, 1000, 500
+<span class="file-subheader">Time between commands (ms):</span>
+<span class="code-block">500, 2000, 500, 1000, 500, 2000, 1000, 500</span>
 
-Convert to beats:
-Short (500ms) = .
+<span class="file-subheader">Convert to beats:</span>
+<span class="file-warning">Short (500ms) = .
 Long (2000ms) = -  
-Medium (1000ms) = (space between letters)
+Medium (1000ms) = (space between letters)</span>
 
-. - . (space) . - (space) . 
+<span class="code-block">. - . (space) . - (space) . </span>
 
-Morse Code:
-E (.) T (-)? No...
+<span class="file-subheader">Morse Code:</span>
+<span class="file-note">E (.) T (-)? No...
 
 Actually:
 First group: . - . = R
 Second group: . - = A
 
 RA? 
-Or keep going with more sessions?
+Or keep going with more sessions?</span>
 
-[HIDDEN HINT: This helps decode Burger Riot timestamps]
+<span class="file-warning">[HIDDEN HINT: This helps decode Burger Riot timestamps]</span>
 `,
 
-        "desktop_village/twitch_integration.js": `
-// Desktop Village - Twitch Chat Integration
-// Tower Defense with Chat Control
+    "desktop_village/twitch_integration.js": `<span class="file-header">// Desktop Village - Twitch Chat Integration</span>
+<span class="file-note">// Tower Defense with Chat Control</span>
 
-const chatCommands = {
+<span class="code-block">const chatCommands = {
     '!spawn': spawnEnemy,
     '!buff': buffPlayer,
     '!debuff': debuffPlayer,
     '!chaos': triggerChaosEvent
-};
+};</span>
 
-// Chat Pattern Analysis
-// Discovered something weird...
+<span class="file-note">// Chat Pattern Analysis
+// Discovered something weird...</span>
 
-const messageCounts = {
+<span class="code-block">const messageCounts = {
     'Session 1': 42,
     'Session 2': 17,
     'Session 3': 89,
     'Session 4': 34,
     'Session 5': 76
-};
+};</span>
 
-// If I convert these to hex...
+<span class="file-note">// If I convert these to hex...
 // 42 = 2A
 // 17 = 11  
 // 89 = 59
 // 34 = 22
-// 76 = 4C
+// 76 = 4C</span>
 
-// Then ASCII: * (garbage?) Y " L
+<span class="file-warning">// Then ASCII: * (garbage?) Y " L</span>
 
-// Or maybe it's about DEFENSE PATTERNS?
-// Check defense_patterns.txt
+<span class="file-note">// Or maybe it's about DEFENSE PATTERNS?
+// Check defense_patterns.txt</span>
 `,
 
-        "desktop_village/defense_patterns.txt": `
-DESKTOP VILLAGE - Optimal Defense Patterns
-===========================================
+    "desktop_village/defense_patterns.txt": `<span class="file-header">DESKTOP VILLAGE - Optimal Defense Patterns</span>
+<span class="file-divider">===========================================</span>
 
-Tower Placement Efficiency:
+<span class="file-subheader">Tower Placement Efficiency:</span>
 - Corner placement: 45% effectiveness
-- Center placement: 78% effectiveness
+- Center placement: <span class="file-warning">78% effectiveness</span>
 - Edge placement: 62% effectiveness
 
-But when Twitch chat gets involved...
-Chaos multiplier: 2.3x
+<span class="file-note">But when Twitch chat gets involved...
+Chaos multiplier: 2.3x</span>
 
-The pattern emerges when you track:
+<span class="file-warning">The pattern emerges when you track:</span>
 - Spawn timing
 - Tower targeting priority  
 - Resource allocation
 
-It's not random. It's DELIBERATE.
-The chaos has a rhythm.
+<span class="file-error">It's not random. It's DELIBERATE.
+The chaos has a rhythm.</span>
 
-[Cross-reference with Burger Riot]
-Same energy as riot mode.
+<span class="file-warning">[Cross-reference with Burger Riot]</span>
+<span class="file-note">Same energy as riot mode.
 Same unpredictable-but-patterned behavior.
 
 Maybe all tower defense games share this DNA?
-Or maybe it's just how I design chaos systems...
+Or maybe it's just how I design chaos systems...</span>
 `,
 
-        "desktop_village/chat_logs.txt": `
-Twitch Chat Log - Desktop Village Session
-==========================================
-[14:23:15] xXGamer420Xx: !spawn
-[14:23:17] PuzzleMaster: !buff
-[14:23:50] NoobSlayer: This is chaos lol
+    "desktop_village/chat_logs.txt": `<span class="file-header">Twitch Chat Log - Desktop Village Session</span>
+<span class="file-divider">==========================================</span>
+<span class="file-timestamp">[14:23:15]</span> xXGamer420Xx: !spawn
+<span class="file-timestamp">[14:23:17]</span> PuzzleMaster: !buff
+<span class="file-timestamp">[14:23:50]</span> NoobSlayer: This is chaos lol
 
-Pattern Recognition:
-The timestamps... they're familiar.
-14:23:15, 14:23:18, 14:23:45, 14:24:03, 14:24:30, 14:24:35
+<span class="file-subheader">Pattern Recognition:</span>
+<span class="file-note">The timestamps... they're familiar.</span>
+<span class="code-block">14:23:15, 14:23:18, 14:23:45, 14:24:03, 14:24:30, 14:24:35</span>
 
-Wait.
-Those are almost EXACTLY the same as Mana Valley energy_system.log!
+<span class="file-error">Wait.
+Those are almost EXACTLY the same as Mana Valley energy_system.log!</span>
 
-14:23:11 -> 14:23:15 (4 second offset)
+<span class="code-block">14:23:11 -> 14:23:15 (4 second offset)
 14:23:12 -> 14:23:17 (5 second offset)
-14:23:45 -> 14:23:50 (5 second offset)
+14:23:45 -> 14:23:50 (5 second offset)</span>
 
-_ _ _ _ - _ _ _ _ _ - _ _ _ _ _
+<span class="file-warning">_ _ _ _ - _ _ _ _ _ - _ _ _ _ _</span>
 
-This can't be a coincidence.
+<span class="file-error">This can't be a coincidence.
 The projects are SHARING timing data.
 
-Memory leak confirmed.
+Memory leak confirmed.</span>
 `,
 
-        "mana_god/fortress_design.md": `
-# MANA GOD - Fortress Defense Design
+    "mana_god/fortress_design.md": `<span class="file-header"># MANA GOD - Fortress Defense Design</span>
 
-## Core Concept
-Defend the fortress from hordes of blood-red goblins.
-Player is a god. Uses mana. Casts spells.
+<span class="file-subheader">## Core Concept</span>
+<span class="file-note">Defend the fortress from hordes of blood-red goblins.
+Player is a god. Uses mana. Casts spells.</span>
 
-Wait.
+<span class="file-error">Wait.
 
 MANA.
 
 Mana Valley uses mana as a resource.
 Mana God uses mana as a weapon.
 
-They're connected.
+They're connected.</span>
 
-## Energy System
-- Mana Pool: 100 units (starting)
-- Mana Regeneration: 5 per second
-- Spell Costs: 10-50 mana
+<span class="file-subheader">## Energy System</span>
+- Mana Pool: <span class="file-warning">100 units</span> (starting)
+- Mana Regeneration: <span class="file-warning">5 per second</span>
+- Spell Costs: <span class="file-warning">10-50 mana</span>
 
-The energy flow... it's the same algorithm.
-I literally copied the code from Mana Valley.
+<span class="file-note">The energy flow... it's the same algorithm.
+I literally copied the code from Mana Valley.</span>
 
-But it FEELS different in context.
+<span class="file-warning">But it FEELS different in context.
 Tower defense vs resource management.
 
-Same system. Different experience.
+Same system. Different experience.</span>
 
-## Revelation
-All my games use MANA as the core resource.
-Even when I call it something else:
+<span class="file-header">## Revelation</span>
+<span class="file-error">All my games use MANA as the core resource.
+Even when I call it something else:</span>
 - Energy (Valley)
 - Time (Burger Riot)  
 - Momentum (Simon's Hallway)
 - Resources (Indie Dev)
 
-It's all the same.
-It's all CREATIVE ENERGY.
+<span class="file-warning">It's all the same.
+It's all CREATIVE ENERGY.</span>
 `,
 
-        "mana_god/goblin_ai.txt": `
-GOBLIN AI BEHAVIOR PATTERNS
-============================
+    "mana_god/goblin_ai.txt": `<span class="file-header">GOBLIN AI BEHAVIOR PATTERNS</span>
+<span class="file-divider">============================</span>
 
-Goblin pathfinding algorithm:
+<span class="file-subheader">Goblin pathfinding algorithm:</span>
 1. Identify shortest path to fortress
 2. Avoid player spell zones
 3. Swarm behavior when in groups
 
-But they're not acting randomly.
-When I log their spawn coordinates...
+<span class="file-note">But they're not acting randomly.
+When I log their spawn coordinates...</span>
 
-Spawn Pattern (X,Y):
-(4,13), (1,14), (14,1), (1,14), (13,5)
+<span class="file-subheader">Spawn Pattern (X,Y):</span>
+<span class="code-block">(4,13), (1,14), (14,1), (1,14), (13,5)</span>
 
-Those coordinates AGAIN.
+<span class="file-error">Those coordinates AGAIN.</span>
 
-They're the same as:
+<span class="file-warning">They're the same as:</span>
 - Mana Valley energy pools
 - Pixel Labs clone spawn points  
 - Desktop Village tower placements
 
-Everything is connected through COORDINATES.
+<span class="file-error">Everything is connected through COORDINATES.</span>
 
-[MAJOR HINT]: If you're trying to decode position-based puzzles,
-this is your Rosetta Stone. The coordinates MEAN something.
+<span class="file-warning">[MAJOR HINT]:</span> <span class="file-note">If you're trying to decode position-based puzzles,
+this is your Rosetta Stone. The coordinates MEAN something.</span>
 `,
 
-        "mana_god/.mana_connection": `
-.mana_connection - Hidden File
-================================
+    "mana_god/.mana_connection": `<span class="file-header">.mana_connection - Hidden File</span>
+<span class="file-divider">================================</span>
 
-This file shouldn't exist.
-It appeared after I ran the memory diagnostic.
+<span class="file-error">This file shouldn't exist.
+It appeared after I ran the memory diagnostic.</span>
 
-Contents:
----------
-ALL PROJECTS SHARE THE SAME MANA CORE.
+<span class="file-subheader">Contents:</span>
+<span class="file-divider">---------</span>
+<span class="file-warning">ALL PROJECTS SHARE THE SAME MANA CORE.</span>
 
-Energy flows between:
+<span class="file-note">Energy flows between:</span>
 - Mana Valley (source)
 - Mana God (weapon)
 - Pixel Labs (distribution)
@@ -789,240 +770,235 @@ Energy flows between:
 - Simon's Hallway (timing)
 - Desktop Village (chaos)
 
-They're all aspects of the same thing:
-CREATIVE ENERGY FLOWING THROUGH THE DEVELOPER.
+<span class="file-error">They're all aspects of the same thing:
+CREATIVE ENERGY FLOWING THROUGH THE DEVELOPER.</span>
 
-The "memory leak" isn't a bug.
-It's a FEATURE.
+<span class="file-warning">The "memory leak" isn't a bug.
+It's a FEATURE.</span>
 
-My subconscious is connecting all my work.
-Finding patterns I didn't consciously design.
+<span class="file-note">My subconscious is connecting all my work.
+Finding patterns I didn't consciously design.</span>
 
-Coordinates: (4,13) (1,14) (14,1) (1,14)
-These positions spell something.
-Row = Letter number. Column = ???
+<span class="file-warning">Coordinates:</span> <span class="code-block">(4,13) (1,14) (14,1) (1,14)</span>
+<span class="file-note">These positions spell something.
+Row = Letter number. Column = ???</span>
 
-Figure it out. The archive has more clues.
+<span class="file-error">Figure it out. The archive has more clues.</span>
 `,
 
-        "suspended/destruction_metrics.csv": `
-Destruction Tracking - Suspended Game
-======================================
-Object,Damage,Points,Location
-Desk,100,50,Classroom_A
+    "suspended/destruction_metrics.csv": `<span class="file-header">Destruction Tracking - Suspended Game</span>
+<span class="file-divider">======================================</span>
+<span class="file-subheader">Object,Damage,Points,Location</span>
+Desk,100,<span class="file-warning">50</span>,Classroom_A
 Chair,50,25,Classroom_B  
-Window,200,150,Hallway
-Locker,150,100,Hallway
-Computer,300,250,Lab
+Window,200,<span class="file-warning">150</span>,Hallway
+Locker,150,<span class="file-warning">100</span>,Hallway
+Computer,300,<span class="file-warning">250</span>,Lab
 Whiteboard,75,40,Classroom_A
 
-Total Chaos Score: 615 points
-Suspension Days Earned: 6.15 days
+<span class="file-warning">Total Chaos Score: 615 points</span>
+<span class="file-error">Suspension Days Earned: 6.15 days</span>
 
-Fun Fact:
-The chaos calculation algorithm is IDENTICAL to
-the riot mode chaos in Burger Riot.
+<span class="file-subheader">Fun Fact:</span>
+<span class="file-note">The chaos calculation algorithm is IDENTICAL to
+the riot mode chaos in Burger Riot.</span>
 
-Same code. Different context.
-Destruction vs Food Service chaos.
+<span class="file-warning">Same code. Different context.
+Destruction vs Food Service chaos.</span>
 
-When I copy-pasted that code, I didn't realize
+<span class="file-note">When I copy-pasted that code, I didn't realize
 I was creating a PATTERN across projects.
 
 The chaos has a signature.
-My signature.
+My signature.</span>
 `,
 
-        "suspended/school_layout.txt": `
-SCHOOL LAYOUT - Suspended
-==========================
+    "suspended/school_layout.txt": `<span class="file-header">SCHOOL LAYOUT - Suspended</span>
+<span class="file-divider">==========================</span>
 
-    [Classroom A]--[Hallway]--[Lab]
+<span class="ascii-art">    [Classroom A]--[Hallway]--[Lab]
           |                      |
     [Classroom B]          [Computer Room]
           |                      |
-    [Cafeteria]------------[Library]
+    [Cafeteria]------------[Library]</span>
 
-Optimal Destruction Route:
-Start: Computer Room (high value targets)
-Path: Lab -> Hallway -> Classrooms -> Library
+<span class="file-subheader">Optimal Destruction Route:</span>
+<span class="file-warning">Start:</span> Computer Room (high value targets)
+<span class="file-warning">Path:</span> Lab -> Hallway -> Classrooms -> Library
 
-But players never follow optimal routes.
-They follow INTUITION.
+<span class="file-note">But players never follow optimal routes.
+They follow INTUITION.</span>
 
-And their intuition leads them to create PATTERNS.
+<span class="file-error">And their intuition leads them to create PATTERNS.</span>
 
-When I track player destruction heatmaps...
-They spell WORDS.
+<span class="file-warning">When I track player destruction heatmaps...
+They spell WORDS.</span>
 
-Top 5 destruction coordinates (Grid X,Y):
-(2,2) (3,4) (4,3) (6,3) 
+<span class="file-subheader">Top 5 destruction coordinates (Grid X,Y):</span>
+<span class="code-block">(2,2) (3,4) (4,3) (6,3) 
 (7,4)
 (5,3) (5,4) (1,1) (5,4) (2,1)
 (7,4) 
-(1,1) (3,4) (4,4) (2,4) (1,1)
+(1,1) (3,4) (4,4) (2,4) (1,1)</span>
 
-THOSE COORDINATES AGAIN.
+<span class="file-error">THOSE COORDINATES AGAIN.
 
 The players aren't choosing randomly.
 The GAME is guiding them.
 Subconsciously.
 
-My code has hidden intent.
+My code has hidden intent.</span>
 `,
 
-        "suspended/chaos_theory.md": `
-# Chaos Theory in Game Design
+    "suspended/chaos_theory.md": `<span class="file-header"># Chaos Theory in Game Design</span>
 
-## Observation
-Every game I make has a chaos element:
+<span class="file-subheader">## Observation</span>
+<span class="file-note">Every game I make has a chaos element:</span>
 - Burger Riot: Riot mode
 - Suspended: Destruction scoring  
 - Desktop Village: Twitch chat interference
 - Mana Valley: Energy overflow events
 
-## Pattern
-The chaos follows mathematical patterns.
-It LOOKS random but isn't.
+<span class="file-subheader">## Pattern</span>
+<span class="file-warning">The chaos follows mathematical patterns.
+It LOOKS random but isn't.</span>
 
-## Realization  
-I keep implementing the same chaos algorithm.
-Different variables. Same structure.
+<span class="file-subheader">## Realization</span>  
+<span class="file-error">I keep implementing the same chaos algorithm.
+Different variables. Same structure.</span>
 
-Pseudocode:
-\`\`\`
+<span class="file-subheader">Pseudocode:</span>
+<span class="code-block">\`\`\`
 chaos_value = base_value * (1 + random(0.5, 2.0))
 if chaos_value > threshold:
     trigger_cascade_event()
-\`\`\`
+\`\`\`</span>
 
-The cascade events trigger at SPECIFIC intervals.
-Not random.
+<span class="file-warning">The cascade events trigger at SPECIFIC intervals.
+Not random.</span>
 
-The intervals match MORSE CODE timing.
+<span class="file-note">The intervals match MORSE CODE timing.
 - Short pulse: 0.5s
-- Long pulse: 2.0s
+- Long pulse: 2.0s</span>
 
-Did I do this on purpose?
-Or is my subconscious encoding messages in my games?
+<span class="file-error">Did I do this on purpose?
+Or is my subconscious encoding messages in my games?</span>
 
-[HINT FOR BURGER RIOT PUZZLE]:
-If you're stuck on the timing puzzle,
+<span class="file-warning">[HINT FOR BURGER RIOT PUZZLE]:</span>
+<span class="file-note">If you're stuck on the timing puzzle,
 remember that chaos has rhythm.
-The intervals between chaos events = morse code.
+The intervals between chaos events = morse code.</span>
 `,
 
-        ".archive/manifest.txt": `
-ARCHIVE MANIFEST - Legacy Projects
-===================================
-Status: CORRUPTED
-Last Modified: [TIMESTAMP CORRUPTED]
+    ".archive/manifest.txt": `<span class="file-header">ARCHIVE MANIFEST - Legacy Projects</span>
+<span class="file-divider">===================================</span>
+<span class="file-error">Status: CORRUPTED</span>
+<span class="file-timestamp">Last Modified: [TIMESTAMP CORRUPTED]</span>
 
-WARNING: Memory leak detected between archived projects
-and active development files.
+<span class="file-warning">WARNING: Memory leak detected between archived projects
+and active development files.</span>
 
-Projects showing cross-contamination:
-- Mana Valley <-> Mana God (mana system bleeding)
-- Burger Riot <-> Suspended (chaos algorithms merged)
-- Pixel Labs <-> Desktop Village (spawn patterns identical)  
-- Simon's Hallway <-> Burger Riot (timing systems linked)
+<span class="file-subheader">Projects showing cross-contamination:</span>
+- Mana Valley <-> Mana God <span class="file-note">(mana system bleeding)</span>
+- Burger Riot <-> Suspended <span class="file-note">(chaos algorithms merged)</span>
+- Pixel Labs <-> Desktop Village <span class="file-note">(spawn patterns identical)</span>  
+- Simon's Hallway <-> Burger Riot <span class="file-note">(timing systems linked)</span>
 
-Root Cause: Unknown
-Recommendation: Full system reset
+<span class="file-warning">Root Cause:</span> Unknown
+<span class="file-warning">Recommendation:</span> Full system reset
 
-But wait... what if this ISN'T a bug?
+<span class="file-error">But wait... what if this ISN'T a bug?
 
 What if the projects WANT to connect?
-What if there's a message hidden in the connections?
+What if there's a message hidden in the connections?</span>
 
-See memory_fragments.log for details.
+<span class="file-note">See memory_fragments.log for details.</span>
 
-[ACCESS LEVEL: Requires solving at least 2 side puzzles]
+<span class="file-encrypted">[ACCESS LEVEL: Requires solving at least 2 side puzzles]</span>
 `,
 
-        ".archive/memory_fragments.log": `
-MEMORY FRAGMENT ANALYSIS
-=========================
-Analyzing cross-project data leaks...
+    ".archive/memory_fragments.log": `<span class="file-header">MEMORY FRAGMENT ANALYSIS</span>
+<span class="file-divider">=========================</span>
+<span class="file-note">Analyzing cross-project data leaks...</span>
 
-Fragment 001: COORDINATE SYSTEM
----------------------------------
-Recurring coordinates across all projects:
-Position (4,13) appears in:
+<span class="file-header">Fragment 001: COORDINATE SYSTEM</span>
+<span class="file-divider">---------------------------------</span>
+<span class="file-warning">Recurring coordinates across all projects:</span>
+<span class="file-note">Position (4,13) appears in:</span>
   - Mana Valley energy_system.log
   - Pixel Labs clone_data.csv
   - Mana God goblin_ai.txt
   - Suspended school_layout.txt
 
-Position (1,14) appears in:
+<span class="file-note">Position (1,14) appears in:</span>
   - [same files as above]
 
-These aren't bugs. They're ANCHORS.
-Reference points connecting all projects.
+<span class="file-error">These aren't bugs. They're ANCHORS.
+Reference points connecting all projects.</span>
 
-If we treat them as a GRID COORDINATE SYSTEM:
-Row 4, Column 13 = Letter ?
-Row 1, Column 14 = Letter ?
+<span class="file-warning">If we treat them as a GRID COORDINATE SYSTEM:</span>
+<span class="code-block">Row 4, Column 13 = Letter ?
+Row 1, Column 14 = Letter ?</span>
 
-Using 1-indexed grid where A=1, B=2...
+<span class="file-note">Using 1-indexed grid where A=1, B=2...
 Row 4 = D
 Row 1 = A  
 Column 13 = M
-Column 14 = N
+Column 14 = N</span>
 
-But how do we combine them?
-(Row, Column) = (D,M)? DM?
-Or Column, Row = (M,D)? MD?
+<span class="file-warning">But how do we combine them?</span>
+<span class="file-note">(Row, Column) = (D,M)? DM?
+Or Column, Row = (M,D)? MD?</span>
 
-Fragment 002: TIMING PATTERNS  
--------------------------------
-All projects share timing signatures:
-- 0.5s intervals (SHORT)
-- 1.0s intervals (MEDIUM)
-- 2.0s intervals (LONG)
+<span class="file-header">Fragment 002: TIMING PATTERNS</span>  
+<span class="file-divider">-------------------------------</span>
+<span class="file-warning">All projects share timing signatures:</span>
+- 0.5s intervals <span class="file-note">(SHORT)</span>
+- 1.0s intervals <span class="file-note">(MEDIUM)</span>
+- 2.0s intervals <span class="file-note">(LONG)</span>
 
-Morse code mapping:
-SHORT = . (dot)
+<span class="file-subheader">Morse code mapping:</span>
+<span class="file-warning">SHORT = . (dot)
 LONG = - (dash)  
-MEDIUM = (letter separator)
+MEDIUM = (letter separator)</span>
 
-Simon's Hallway timing: . - . . - . -
+<span class="code-block">Simon's Hallway timing: . - . . - . -
 Burger Riot timestamps: - . - - . . - .
-Suspended chaos events: . . - . - - .
+Suspended chaos events: . . - . - - .</span>
 
-These spell words when decoded properly.
+<span class="file-error">These spell words when decoded properly.</span>
 
-Fragment 003: THE CONNECTION
------------------------------
-All projects are connected through:
+<span class="file-header">Fragment 003: THE CONNECTION</span>
+<span class="file-divider">-----------------------------</span>
+<span class="file-warning">All projects are connected through:</span>
 1. Shared coordinate system
 2. Shared timing patterns
 3. Shared MANA/energy algorithms
 
-Hypothesis:
-The developer's subconscious created a META-PUZZLE
-spanning all their games.
+<span class="file-subheader">Hypothesis:</span>
+<span class="file-error">The developer's subconscious created a META-PUZZLE
+spanning all their games.</span>
 
-The individual games are CHAPTERS.
-Together, they tell a complete story.
+<span class="file-warning">The individual games are CHAPTERS.
+Together, they tell a complete story.</span>
 
-Fragment 004: THE MESSAGE
---------------------------
-[CORRUPTED - Requires all 3 main puzzles solved]
+<span class="file-header">Fragment 004: THE MESSAGE</span>
+<span class="file-divider">--------------------------</span>
+<span class="file-encrypted">[CORRUPTED - Requires all 3 main puzzles solved]</span>
 
-Fragment 005: YOUR ROLE
-------------------------
-You're not just solving puzzles.
-You're reconstructing the developer's creative journey.
+<span class="file-header">Fragment 005: YOUR ROLE</span>
+<span class="file-divider">------------------------</span>
+<span class="file-note">You're not just solving puzzles.
+You're reconstructing the developer's creative journey.</span>
 
-Every coordinate is a brushstroke.
+<span class="file-warning">Every coordinate is a brushstroke.
 Every timing pattern is a rhythm.
-Every energy system is a heartbeat.
+Every energy system is a heartbeat.</span>
 
-The games are alive.
-And they're speaking to you.
+<span class="file-error">The games are alive.
+And they're speaking to you.</span>
 `
-    };
+};
     
     console.log('Filesystem loaded with', Object.keys(fileSystem).length, 'files');
 }
