@@ -153,6 +153,78 @@ input {
 
 }
 
+/* File content formatting */
+.file-content {
+    line-height: 1.6;
+}
+
+.file-header {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #00ff00;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.file-subheader {
+    font-weight: bold;
+    color: #00dd00;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.file-section {
+    margin-left: 20px;
+    margin-bottom: 12px;
+}
+
+.file-divider {
+    color: #00aa00;
+    margin: 12px 0;
+    display: block;
+}
+
+.file-note {
+    color: #00dddd;
+    font-style: italic;
+}
+
+.file-warning {
+    color: #ffff00;
+    font-weight: bold;
+}
+
+.file-error {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.file-timestamp {
+    color: #888888;
+}
+
+.file-encrypted {
+    color: #ff00ff;
+    font-family: monospace;
+}
+
+.ascii-art {
+    font-family: monospace;
+    color: #00aa00;
+    line-height: 1.2;
+}
+
+.code-block {
+    background: rgba(0, 255, 0, 0.05);
+    border-left: 2px solid #00ff00;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-family: monospace;
+}
+
 @keyframes input-pulse {
     0%, 100% { 
         box-shadow: 0 0 1px #00ff00, inset 0 0 1px rgba(0, 255, 0, 0.1);

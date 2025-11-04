@@ -1,12 +1,63 @@
-// Typewriter effect for terminal
 class Typewriter {
     constructor() {
-        this.speed = 3; // milliseconds per chunk (lower = faster)
-        this.chunkSize = 10; // characters to display at once (higher = faster)
-        this.lineDelay = 0; // delay between lines
+        this.speed = 3;
+        this.chunkSize = 5;
+        this.lineDelay = 0;
         this.queue = [];
         this.isTyping = false;
+
+        // 🎵 Add sound properties
+        this.typingAudio = new Audio('sounds/typing_loop.mp3'); // Replace with your file path
+        this.typingAudio.loop = true;
+        this.typingAudio.volume = 0.3;
+
+        this.completeAudio = new Audio('sounds/type_complete.mp3'); // Replace with your file path
+        this.completeAudio.volume = 0.6;
+
+        this.soundEnabled = true; // master toggle
     }
+
+    // 🟢 Start typing sound
+    startTypingSound() {
+        if (!this.soundEnabled) {
+            console.log('[Typewriter Sound] Sound disabled — skipping typing sound.');
+            return;
+        }
+
+        if (this.typingAudio && this.typingAudio.paused) {
+            console.log('[Typewriter Sound] Starting typing sound...');
+            this.typingAudio.currentTime = 0;
+            this.typingAudio.play()
+                .then(() => console.log('[Typewriter Sound] Typing sound playing.'))
+                .catch(err => console.warn('[Typewriter Sound] Could not play typing sound:', err));
+        } else {
+            console.log('[Typewriter Sound] Typing sound already playing.');
+        }
+    }
+
+    // 🔴 Stop typing sound and play completion chime
+    stopTypingSound() {
+        console.log('[Typewriter Sound] Stopping typing sound...');
+        if (this.typingAudio && !this.typingAudio.paused) {
+            this.typingAudio.pause();
+            this.typingAudio.currentTime = 0;
+            console.log('[Typewriter Sound] Typing sound stopped.');
+        } else {
+            console.log('[Typewriter Sound] Typing sound already stopped.');
+        }
+
+        if (this.soundEnabled && this.completeAudio) {
+            console.log('[Typewriter Sound] Playing completion sound...');
+            this.completeAudio.currentTime = 0;
+            this.completeAudio.play()
+                .then(() => console.log('[Typewriter Sound] Completion sound played.'))
+                .catch(err => console.warn('[Typewriter Sound] Could not play completion sound:', err));
+        }
+    }
+
+    
+
+
 
     async typeElement(element, speed = this.speed) {
         // Get all text content including nested elements
@@ -127,16 +178,34 @@ class Typewriter {
         }
     }
 
+   // 🧠 Existing processQueue with sound hooks
     async processQueue() {
         if (this.queue.length === 0) {
+            console.log('[Typewriter Queue] No items in queue — stopping typing sound.');
             this.isTyping = false;
+            this.stopTypingSound();
             return;
         }
-        
-        this.isTyping = true;
+
+        if (!this.isTyping) {
+            console.log('[Typewriter Queue] Starting typing sequence...');
+            this.isTyping = true;
+            this.startTypingSound();
+        } else {
+            console.log('[Typewriter Queue] Continuing queued typing...');
+        }
+
         const callback = this.queue.shift();
         await callback();
-        this.processQueue();
+
+        if (this.queue.length === 0) {
+            console.log('[Typewriter Queue] Finished all queued typing.');
+            this.isTyping = false;
+            this.stopTypingSound();
+        } else {
+            console.log(`[Typewriter Queue] ${this.queue.length} item(s) remaining — continuing...`);
+            this.processQueue();
+        }
     }
 }
 
