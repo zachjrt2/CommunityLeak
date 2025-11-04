@@ -1,8 +1,8 @@
 // Typewriter effect for terminal
 class Typewriter {
     constructor() {
-        this.speed = 30; // milliseconds per chunk
-        this.chunkSize = 5; // characters to display at once
+        this.speed = 16; // milliseconds per chunk
+        this.chunkSize = 15; // characters to display at once
         this.glitchChance = 0.02; // 2% chance of glitch per character
         this.queue = [];
         this.isTyping = false;
