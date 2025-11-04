@@ -1,9 +1,10 @@
 // Typewriter effect for terminal
 class Typewriter {
     constructor() {
-        this.speed = 16; // milliseconds per chunk
-        this.chunkSize = 15; // characters to display at once
-        this.glitchChance = 0.02; // 2% chance of glitch per character
+        this.speed = 8; // milliseconds per chunk
+        this.chunkSize = 10; // characters to display at once
+        this.lineDelay = 0; // delay between lines (0 = all lines type simultaneously)
+        this.glitchChance = 0.01; // 1% chance of glitch per character
         this.queue = [];
         this.isTyping = false;
     }
@@ -40,24 +41,39 @@ class Typewriter {
     }
 
     async typeText(element, text, speed) {
-        for (let i = 0; i < text.length; i++) {
-            // Random glitch effect
-            if (Math.random() < this.glitchChance) {
-                const glitchChars = ['█', '▓', '▒', '░', '╬', '╣', '║', '╗', '╝', '¶', '§'];
-                const glitch = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+        let i = 0;
+        while (i < text.length) {
+            // Determine chunk size (may be smaller at end of text)
+            const currentChunkSize = Math.min(this.chunkSize, text.length - i);
+            const chunk = text.substr(i, currentChunkSize);
+            
+            // Add characters in this chunk
+            for (let j = 0; j < chunk.length; j++) {
+                const char = chunk[j];
                 
-                const textNode = document.createTextNode(glitch);
-                element.appendChild(textNode);
-                await this.sleep(speed / 2);
-                textNode.textContent = text[i];
-            } else {
-                element.appendChild(document.createTextNode(text[i]));
+                // Random glitch effect
+                if (Math.random() < this.glitchChance) {
+                    const glitchChars = ['█', '▓', '▒', '░', '╬', '╣', '║', '╗', '╝', '¶', '§'];
+                    const glitch = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                    
+                    const textNode = document.createTextNode(glitch);
+                    element.appendChild(textNode);
+                    await this.sleep(speed / (this.chunkSize * 2));
+                    textNode.textContent = char;
+                } else {
+                    element.appendChild(document.createTextNode(char));
+                }
             }
             
-            // Variable speed for more organic feel
-            const variance = speed * 0.5;
-            const actualSpeed = speed + (Math.random() * variance - variance / 2);
-            await this.sleep(actualSpeed);
+            i += currentChunkSize;
+            
+            // Wait before next chunk (unless we're at the end)
+            if (i < text.length) {
+                // Variable speed for more organic feel
+                const variance = speed * 0.3;
+                const actualSpeed = speed + (Math.random() * variance - variance / 2);
+                await this.sleep(actualSpeed);
+            }
         }
     }
 
@@ -110,7 +126,7 @@ function initializeTypewriterEffects() {
         
         // Type out the boot sequence
         typewriter.addToQueue(async () => {
-            await typewriter.typeHTML(bootSequence, originalContent, 8);
+            await typewriter.typeHTML(bootSequence, originalContent, 20);
         });
     }
 }
