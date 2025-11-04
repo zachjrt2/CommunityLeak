@@ -64,8 +64,60 @@ Starting daemon processes...
             <span class="cursor">█</span>
         </div>
     </div>
+
+<!-- Film Scratch Overlay -->
+<div id="film-overlay-image"></div>
+
+<style>
+#film-overlay-image {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  pointer-events: none; /* clicks go through */
+  z-index: 9999;
+  background: url('overlay.jpg') repeat; /* replace with your overlay image */
+  background-size: cover; /* or 'contain' if you want full fit */
+  opacity: 0.1; /* adjust for desired intensity */
+  mix-blend-mode: screen; /* or 'screen', 'soft-light', 'multiply', etc. */
+  animation: overlay-flicker 15s linear infinite;
+}
+
+/* Subtle flicker / movement to simulate old film */
+@keyframes overlay-flicker {
+  0% { opacity: 0; }
+  25% { opacity: 0.05; }
+  50% { opacity: 0.2; }
+  75% { opacity: 0.05; }
+  100% {opacity: 0; }
+}
+
+/* Optional: hide overlay */
+#film-overlay-image.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+</style>
+
+<script>
+window.filmOverlayImage = {
+  show: function() {
+    document.getElementById('film-overlay-image').classList.remove('hidden');
+    console.log('[Film Overlay] Visible.');
+  },
+  hide: function() {
+    document.getElementById('film-overlay-image').classList.add('hidden');
+    console.log('[Film Overlay] Hidden.');
+  },
+  setOpacity: function(opacity) {
+    document.getElementById('film-overlay-image').style.opacity = opacity;
+    console.log('[Film Overlay] Opacity set to', opacity);
+  }
+};
+</script>
+
     <script src="sound_manager.js"></script>
 <script src="typewriter.js"></script>
     <script src="terminal.js"></script>
+    
 </body>
 </html>
