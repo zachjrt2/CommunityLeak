@@ -111,7 +111,7 @@ body {
 }
 
 .prompt::before {
-    content: "root@ved-aia:~$ ";
+    content: "root@aia-dev:~$ ";
     color: #00aa00;
 }
 

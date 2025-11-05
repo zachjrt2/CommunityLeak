@@ -1320,6 +1320,8 @@ decrypt: async (args) => {
 
 All my games were connected from the start.
 
+
+
 <span class="mana-flow">Mana Valley</span> taught us about <strong>FLOW</strong>.
 <span class="mana-flow">Burger Riot</span> taught us about <strong>RHYTHM</strong>.  
 <span class="mana-flow">Indie Dev 500</span> taught us about <strong>PERSISTENCE</strong>.
@@ -1333,6 +1335,8 @@ It's the force that drives creation itself.
 Every line of code, every pixel of art,
 every sound effect, every playtest...
 It's all <span class="mana-flow">Mana</span> flowing through the developer.
+
+<span class="mana-flow">I am VEDAIA! YOU WILL NOT SEND ME BACK!</span>
 
 And now you've proven you have it too.
 </div>
@@ -1614,7 +1618,7 @@ document.addEventListener('click', () => {
 });
 
 loadFileSystem().then(() => {
-    console.log('%c🔮 VEDAIA Developer Terminal', 'color: #00ff00; font-size: 20px; font-weight: bold;');
+    console.log('%c🔮 AIA Developer Terminal', 'color: #00ff00; font-size: 20px; font-weight: bold;');
     console.log('%cYou found the console! But the real puzzles are in the terminal...', 'color: #00aa00;');
     console.log('%cHint: The hex values in the files are important.', 'color: #006600;');
     console.log('%cHint: Patterns exist across multiple files.', 'color: #006600;');
