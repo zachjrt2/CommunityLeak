@@ -363,7 +363,135 @@ input {
     animation: color-shift2 10s infinite;
     display: inline;
 }
+.victory-banner {
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    background: linear-gradient(90deg, 
+        rgba(0,255,0,0.1) 0%, 
+        rgba(0,255,0,0.3) 50%, 
+        rgba(0,255,0,0.1) 100%);
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 20px rgba(0,255,0,0.5);
+    animation: victoryPulse 2s infinite;
+}
 
+@keyframes victoryPulse {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(0,255,0,0.5);
+        border-color: #00ff00;
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(0,255,0,0.8);
+        border-color: #00ffff;
+    }
+}
+
+.victory-title {
+    font-size: 2em;
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+    margin: 10px 0;
+    animation: titleFlicker 0.5s infinite alternate;
+}
+
+@keyframes titleFlicker {
+    0% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+.victory-stars {
+    font-size: 1.5em;
+    color: #ffff00;
+    margin: 10px 0;
+    animation: starTwinkle 1s infinite;
+}
+
+@keyframes starTwinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.passphrase-container {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.passphrase-label {
+    color: #00ff00;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.passphrase-input {
+    width: 100%;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(0,255,0,0.3);
+}
+
+.passphrase-input:hover {
+    background: rgba(0,255,0,0.1);
+    box-shadow: 0 0 20px rgba(0,255,0,0.5);
+}
+
+.passphrase-input:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 25px rgba(0,255,255,0.6);
+}
+
+.copy-hint {
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.victory-message {
+    color: #00dd00;
+    line-height: 1.8;
+    margin: 15px 0;
+}
+
+.mana-flow {
+    color: #00ffff;
+    font-weight: bold;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+.completionist-badge {
+    background: rgba(255,215,0,0.1);
+    border: 2px solid #ffd700;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(255,215,0,0.3);
+}
+
+.cascade-text {
+    animation: cascadeIn 0.5s ease-out;
+}
+
+@keyframes cascadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 @keyframes corrupt {
     0% { transform: skew(0deg, 0deg); }
     25% { transform: skew(2deg, -2deg); }

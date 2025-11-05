@@ -16,22 +16,22 @@ class SoundManager {
 
     async playStartupSequence() {
         if (!this.soundEnabled || this.hasStarted) {
-            console.log('[SoundManager] Startup blocked or already played.');
+            //console.log('[SoundManager] Startup blocked or already played.');
             return;
         }
         this.hasStarted = true;
 
         try {
-            console.log('[SoundManager] Playing startup sound...');
+            //console.log('[SoundManager] Playing startup sound...');
             await this.startupSound.play();
-            console.log('[SoundManager] Startup sound playing...');
+            //console.log('[SoundManager] Startup sound playing...');
 
             this.startupSound.addEventListener('ended', () => {
-                console.log('[SoundManager] Startup sound ended — starting ambient fade-in.');
+                //console.log('[SoundManager] Startup sound ended — starting ambient fade-in.');
                 this.fadeInAmbient();
             });
         } catch (err) {
-            console.warn('[SoundManager] Could not play startup sound:', err);
+            //console.warn('[SoundManager] Could not play startup sound:', err);
         }
     }
 
@@ -42,7 +42,7 @@ class SoundManager {
             this.ambientSound.currentTime = 0;
             this.ambientSound.play()
                 .then(() => {
-                    console.log('[SoundManager] Ambient loop started — fading in...');
+                    //console.log('[SoundManager] Ambient loop started — fading in...');
                     let volume = 0.0;
                     const fadeTarget = 0.3;
                     const fadeStep = 0.02;
@@ -52,7 +52,7 @@ class SoundManager {
                             this.ambientSound.volume = Math.min(volume, fadeTarget);
                         } else {
                             clearInterval(fadeInterval);
-                            console.log('[SoundManager] Ambient fade-in complete.');
+                            //console.log('[SoundManager] Ambient fade-in complete.');
                         }
                     }, 200);
                 })
@@ -62,7 +62,7 @@ class SoundManager {
 
     playEnterSound() {
         if (!this.soundEnabled) return;
-        console.log('[SoundManager] Playing input submit sound.');
+        //console.log('[SoundManager] Playing input submit sound.');
         this.enterSound.currentTime = 0;
         this.enterSound.play().catch(err =>
             console.warn('[SoundManager] Could not play enter sound:', err)
@@ -138,14 +138,14 @@ class SoundManager {
 
         // Wire up buttons
         document.getElementById('allow-sound').addEventListener('click', () => {
-            console.log('[SoundManager] User consented to sound.');
+            //console.log('[SoundManager] User consented to sound.');
             this.soundEnabled = true;
             this.playStartupSequence();
             popup.remove();
         });
 
         document.getElementById('mute-sound').addEventListener('click', () => {
-            console.log('[SoundManager] User denied sound.');
+            //console.log('[SoundManager] User denied sound.');
             this.soundEnabled = false;
             popup.remove();
         });
@@ -160,7 +160,7 @@ if (typeof window !== 'undefined') {
 
 // 🔊 Initialize popup + enter key sound
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[SoundManager] DOM loaded — asking for sound permission.');
+    //console.log('[SoundManager] DOM loaded — asking for sound permission.');
     soundManager.showSoundConsentPopup();
 
     document.addEventListener('keydown', (e) => {

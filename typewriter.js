@@ -20,38 +20,36 @@ class Typewriter {
     // 🟢 Start typing sound
     startTypingSound() {
         if (!this.soundEnabled) {
-            console.log('[Typewriter Sound] Sound disabled — skipping typing sound.');
+            // console.log('[Typewriter Sound] Sound disabled — skipping typing sound.');
             return;
         }
 
         if (this.typingAudio && this.typingAudio.paused) {
-            console.log('[Typewriter Sound] Starting typing sound...');
+            // console.log('[Typewriter Sound] Starting typing sound...');
             this.typingAudio.currentTime = 0;
             this.typingAudio.play()
-                .then(() => console.log('[Typewriter Sound] Typing sound playing.'))
-                .catch(err => console.warn('[Typewriter Sound] Could not play typing sound:', err));
+   
         } else {
-            console.log('[Typewriter Sound] Typing sound already playing.');
+            //console.log('[Typewriter Sound] Typing sound already playing.');
         }
     }
 
     // 🔴 Stop typing sound and play completion chime
     stopTypingSound() {
-        console.log('[Typewriter Sound] Stopping typing sound...');
+        //console.log('[Typewriter Sound] Stopping typing sound...');
         if (this.typingAudio && !this.typingAudio.paused) {
             this.typingAudio.pause();
             this.typingAudio.currentTime = 0;
-            console.log('[Typewriter Sound] Typing sound stopped.');
+            //console.log('[Typewriter Sound] Typing sound stopped.');
         } else {
-            console.log('[Typewriter Sound] Typing sound already stopped.');
+            //console.log('[Typewriter Sound] Typing sound already stopped.');
         }
 
         if (this.soundEnabled && this.completeAudio) {
-            console.log('[Typewriter Sound] Playing completion sound...');
+            //console.log('[Typewriter Sound] Playing completion sound...');
             this.completeAudio.currentTime = 0;
             this.completeAudio.play()
-                .then(() => console.log('[Typewriter Sound] Completion sound played.'))
-                .catch(err => console.warn('[Typewriter Sound] Could not play completion sound:', err));
+          
         }
     }
 
@@ -181,29 +179,29 @@ class Typewriter {
    // 🧠 Existing processQueue with sound hooks
     async processQueue() {
         if (this.queue.length === 0) {
-            console.log('[Typewriter Queue] No items in queue — stopping typing sound.');
+            //console.log('[Typewriter Queue] No items in queue — stopping typing sound.');
             this.isTyping = false;
             this.stopTypingSound();
             return;
         }
 
         if (!this.isTyping) {
-            console.log('[Typewriter Queue] Starting typing sequence...');
+            //console.log('[Typewriter Queue] Starting typing sequence...');
             this.isTyping = true;
             this.startTypingSound();
         } else {
-            console.log('[Typewriter Queue] Continuing queued typing...');
+            //console.log('[Typewriter Queue] Continuing queued typing...');
         }
 
         const callback = this.queue.shift();
         await callback();
 
         if (this.queue.length === 0) {
-            console.log('[Typewriter Queue] Finished all queued typing.');
+            //console.log('[Typewriter Queue] Finished all queued typing.');
             this.isTyping = false;
             this.stopTypingSound();
         } else {
-            console.log(`[Typewriter Queue] ${this.queue.length} item(s) remaining — continuing...`);
+            //console.log(`[Typewriter Queue] ${this.queue.length} item(s) remaining — continuing...`);
             this.processQueue();
         }
     }
@@ -236,6 +234,7 @@ const observer = new MutationObserver((mutations) => {
             if (node.nodeType === Node.ELEMENT_NODE && 
                 node.classList && 
                 !node.classList.contains('boot-sequence') &&
+                !node.classList.contains('no-typewriter') && 
                 !node.id.includes('input') &&
                 !node.classList.contains('cursor')) {
                 

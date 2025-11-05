@@ -71,9 +71,6 @@ const gameState = {
     }
 };
 
-
-
-// Load filesystem - embedded data
 async function loadFileSystem() {
   fileSystem = {
     "mana_valley/concept.txt": `<span class="file-header">MANA VALLEY - Core Concept Document</span>
@@ -1000,7 +997,33 @@ And they're speaking to you.</span>
 `
 };
     
-    console.log('Filesystem loaded with', Object.keys(fileSystem).length, 'files');
+    // console.log('Filesystem loaded with', Object.keys(fileSystem).length, 'files');
+}
+
+
+// Sound effects
+function playSuccessSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Success sound: ascending notes
+        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+        console.log('Audio not available');
+    }
 }
 
 // Command handlers
@@ -1055,7 +1078,6 @@ Available commands:
             let hiddenProjects = [];
             
             for (let [project, data] of Object.entries(gameState.projects)) {
-                // Skip hidden projects unless -a flag used
                 if (data.type === 'hidden' && !showAll) continue;
                 
                 const status = data.locked ? '[LOCKED]' : 
@@ -1114,16 +1136,11 @@ Available commands:
         
         let filePath = args[0];
         
-        // If we're in a subdirectory and the path doesn't contain '/', prepend current directory
         if (!filePath.includes('/') && gameState.currentDir !== '~') {
             filePath = gameState.currentDir.replace('~/', '') + '/' + filePath;
         }
         
-        console.log('Attempting to read file:', filePath); // Debug line
-        console.log('Available files:', Object.keys(fileSystem)); // Debug line
-        
         if (fileSystem[filePath]) {
-            // Track discoveries from side puzzles
             if (filePath.includes('pixel_labs') || 
                 filePath.includes('simons_hallway') || 
                 filePath.includes('mana_god')) {
@@ -1139,7 +1156,6 @@ Available commands:
             return fileSystem[filePath];
         }
         
-        // Provide helpful suggestions for common mistakes
         const fileName = args[0];
         const suggestions = [];
         
@@ -1167,14 +1183,11 @@ This ID is part of your final passphrase.`;
     },
     
     cd: (args) => {
-        // Removed the terminalUnlocked check entirely
-        
         if (!args[0] || args[0] === '~') {
             gameState.currentDir = '~';
             return 'Changed directory to ~\n\n<span class="success">Tip: Type "ls" to see available projects</span>';
         }
         
-        // Handle cd .. to go back
         if (args[0] === '..') {
             gameState.currentDir = '~';
             return 'Changed directory to ~';
@@ -1217,13 +1230,15 @@ This ID is part of your final passphrase.`;
         
         const code = args[0].toUpperCase();
         
-        // Mana Valley solution
         if (code === 'FLOW_STATE_ALPHA' && !gameState.projects.mana_valley.solved) {
             gameState.projects.mana_valley.solved = true;
             gameState.projects.burger_riot.locked = false;
             gameState.terminalUnlocked = true;
             solvedPuzzles.push('MANA');
             unlockedCommands.push('grep', 'decode', 'verify');
+            
+            playSuccessSound();
+            
             return `<span class="success">✓ MANA VALLEY SOLVED!</span>
 
 Terminal access granted.
@@ -1236,12 +1251,14 @@ The energy flows through you...
 <span class="success">Progress: ${solvedPuzzles.length}/3 main puzzles solved</span>`;
         }
         
-        // Burger Riot solution  
         if (code === 'HOTSTOVE' && gameState.projects.mana_valley.solved && !gameState.projects.burger_riot.solved) {
             gameState.projects.burger_riot.solved = true;
             gameState.projects.indie_dev_500.locked = false;
             solvedPuzzles.push('RIOT');
             unlockedCommands.push('decrypt', 'status');
+            
+            playSuccessSound();
+            
             return `<span class="success">✓ BURGER RIOT SOLVED!</span>
 
 The rhythm was the key all along.
@@ -1262,63 +1279,101 @@ The patterns are becoming clearer...
   - Are solving puzzles in order (check "status" command)`;
     },
         
-    decrypt: (args) => {
-        if (solvedPuzzles.length < 2) {
-            return 'Decrypt command not available yet. Solve more puzzles.';
-        }
+decrypt: async (args) => {
+    if (solvedPuzzles.length < 2) {
+        return 'Decrypt command not available yet. Solve more puzzles.';
+    }
+    
+    if (!args[0]) return 'Usage: decrypt <key>';
+    
+    const key = args[0].toUpperCase();
+    const expectedKey = `FLOW_STATE_ALPHA_HOTSTOVE_${sessionId.toUpperCase()}`;
+    
+    if (key === expectedKey) {
+        gameState.projects.indie_dev_500.solved = true;
+        solvedPuzzles.push('DEV500');
         
-        if (!args[0]) return 'Usage: decrypt <key>';
+        // Enhanced victory sound sequence
+        playVictorySequence();
         
-        const key = args[0].toUpperCase();
-        const expectedKey = `FLOW_STATE_ALPHA_HOTSTOVE_${sessionId.toUpperCase()}`;
+        const passphraseData = await generatePassphrase();
         
-        if (key === expectedKey) {
-            gameState.projects.indie_dev_500.solved = true;
-            solvedPuzzles.push('DEV500');
-            
-            const passphrase = generatePassphrase();
-            return `<span class="success">✓ INDIE DEV 500 SOLVED!</span>
-<span class="success">✓✓✓ ALL CORE PUZZLES COMPLETE ✓✓✓</span>
+        // Return a placeholder that we'll populate after the typewriter observer runs
+        setTimeout(() => {
+            // Find the last output element and populate it
+            const outputs = document.querySelectorAll('#output-container > div');
+            const lastOutput = outputs[outputs.length - 1];
+            if (lastOutput) {
+                lastOutput.classList.add('no-typewriter');
+                lastOutput.innerHTML = `
+<div class="victory-banner">
+    <div class="victory-stars">★ ★ ★ ★ ★</div>
+    <div class="victory-title">✓✓✓ ALL CORE PUZZLES COMPLETE ✓✓✓</div>
+    <div class="victory-stars">★ ★ ★ ★ ★</div>
+</div>
 
-DECRYPTED DEV JOURNAL - Final Entry:
-=====================================
+<div class="victory-message">
+<span class="file-header">DECRYPTED DEV JOURNAL - Final Entry</span>
+<span class="file-divider">=====================================</span>
 
-Day 500 - The Truth
+<span class="file-subheader">Day 500 - The Truth</span>
 
 All my games were connected from the start.
-Mana Valley taught us about FLOW.
-Burger Riot taught us about RHYTHM.  
-Indie Dev 500 taught us about PERSISTENCE.
+
+<span class="mana-flow">Mana Valley</span> taught us about <strong>FLOW</strong>.
+<span class="mana-flow">Burger Riot</span> taught us about <strong>RHYTHM</strong>.  
+<span class="mana-flow">Indie Dev 500</span> taught us about <strong>PERSISTENCE</strong>.
 
 But they're all expressions of the same thing:
-CREATIVE ENERGY.
+<span class="mana-flow">CREATIVE ENERGY</span>.
 
 The "Mana" was never just a game mechanic.
 It's the force that drives creation itself.
 
 Every line of code, every pixel of art,
 every sound effect, every playtest...
-It's all Mana flowing through the developer.
+It's all <span class="mana-flow">Mana</span> flowing through the developer.
 
 And now you've proven you have it too.
+</div>
 
-Your unique completion passphrase:
-<span class="glitch success">${passphrase}</span>
+<div class="passphrase-container">
+    <label class="passphrase-label">🔐 YOUR UNIQUE VICTORY PASSPHRASE:</label>
+    <input 
+        type="text" 
+        class="passphrase-input" 
+        value="${passphraseData.encrypted}" 
+        readonly
+        onclick="this.select(); document.execCommand('copy'); showCopyConfirmation();"
+        title="Click to copy"
+    />
+    <div class="copy-hint">Click the passphrase to copy • Send to Zach to verify your journey</div>
+</div>
 
-Send this to the developer to prove your journey.
-This passphrase is unique to YOUR path through the terminal.
+${discoveredSecrets.length >= 3 ? `
+<div class="completionist-badge">
+    <span class="victory-stars">★ COMPLETIONIST BONUS ★</span><br>
+    You explored the side projects!<br>
+    The archive holds deeper truths for those who seek...
+</div>
+` : ''}
 
-${discoveredSecrets.length >= 3 ? '\n<span class="warning">★ COMPLETIONIST BONUS: You explored the side projects!\nThe archive holds deeper truths for those who seek...</span>' : ''}
+<div class="victory-message" style="text-align: center; margin-top: 20px;">
+Thank you for playing.<br>
+<span class="mana-flow">The flow continues...</span>
+</div>
 
-Thank you for playing.
-The flow continues...
-
-=====================================`;
-        }
+<span class="file-divider">=====================================</span>
+                `;
+            }
+        }, 100);
         
-        return `<span class="error">Decryption failed. Invalid key format.</span>
-Expected format: MANA_VALLEY_ANSWER_BURGER_RIOT_ANSWER_SESSION_ID`;
-    },
+        return '<span class="success">✓ INDIE DEV 500 SOLVED!</span>';
+    }
+    
+    return `<span class="error">Decryption failed. Invalid key format.</span>
+Expected format: FLOW_STATE_ALPHA_HOTSTOVE_SESSION_ID`;
+},
     
     status: () => {
         if (solvedPuzzles.length < 2) {
@@ -1394,14 +1449,107 @@ Expected format: MANA_VALLEY_ANSWER_BURGER_RIOT_ANSWER_SESSION_ID`;
         return 'grep: Basic implementation - try reading files with cat instead';
     }
 };
+function playVictorySequence() {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Victory fanfare notes
+    const notes = [
+        { freq: 523.25, time: 0, duration: 0.2 },    // C5
+        { freq: 659.25, time: 0.2, duration: 0.2 },  // E5
+        { freq: 783.99, time: 0.4, duration: 0.2 },  // G5
+        { freq: 1046.50, time: 0.6, duration: 0.4 }, // C6 (sustained)
+        { freq: 783.99, time: 1.0, duration: 0.15 }, // G5
+        { freq: 1046.50, time: 1.15, duration: 0.6 } // C6 (final)
+    ];
+    
+    notes.forEach(note => {
+        setTimeout(() => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = note.freq;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + note.duration);
+        }, note.time * 1000);
+    });
+}
+
+// Copy confirmation function
+function showCopyConfirmation() {
+    const hint = document.querySelector('.copy-hint');
+    const originalText = hint.textContent;
+    hint.textContent = '✓ Copied to clipboard!';
+    hint.style.color = '#00ff00';
+    
+    setTimeout(() => {
+        hint.textContent = originalText;
+        hint.style.color = '#888';
+    }, 2000);
+}
+
+// Make sure these functions are globally accessible
+if (typeof window !== 'undefined') {
+    window.showCopyConfirmation = showCopyConfirmation;
+    window.playVictorySequence = playVictorySequence;
+}
+
+function caesarEncrypt(str, shift = 7) {
+  return str.split('').map(c => {
+    const code = c.charCodeAt(0);
+    if (code >= 65 && code <= 90) return String.fromCharCode(((code - 65 + shift) % 26) + 65);
+    if (code >= 97 && code <= 122) return String.fromCharCode(((code - 97 + shift) % 26) + 97);
+    if (code >= 48 && code <= 57) return String.fromCharCode(((code - 48 + shift) % 10) + 48);
+    return c; // keep other chars unchanged
+  }).join('');
+}
+
+function caesarDecrypt(str, shift = 7) {
+  return caesarEncrypt(str, 26 - shift);
+}
+
+function formatTimestamp(date = new Date()) {
+  const pad = n => n.toString().padStart(2, '0');
+  const YYYY = date.getFullYear();
+  const MM = pad(date.getMonth() + 1);
+  const DD = pad(date.getDate());
+  const HH = pad(date.getHours());
+  const mm = pad(date.getMinutes());
+  const ss = pad(date.getSeconds());
+  return `${YYYY}-${MM}-${DD}_${HH}:${mm}:${ss}`;
+}
 
 function generatePassphrase() {
-    const checksum = solvedPuzzles.join('').split('').reduce((a, b) => {
-        return ((a << 5) - a + b.charCodeAt(0)) | 0;
-    }, 0);
-    const bonus = discoveredSecrets.length >= 5 ? '-COMPLETE' : '';
-    return `MANA-${sessionId}-${Math.abs(checksum).toString(36).toUpperCase()}${bonus}`;
+  const checksum = solvedPuzzles.join('').split('').reduce((a, b) => {
+    return ((a << 5) - a + b.charCodeAt(0)) | 0;
+  }, 0);
+  const bonus = discoveredSecrets.length >= 5 ? '-COMPLETE' : '';
+  const passphrase = `MANA-${sessionId}-${Math.abs(checksum).toString(36).toUpperCase()}${bonus}`;
+
+  const timestamp = formatTimestamp();
+  const payload = `${passphrase}::${timestamp}`;
+
+  const encrypted = caesarEncrypt(payload, 7);
+
+  return {
+    passphrase,    // original passphrase
+    encrypted      // Caesar +7 encrypted payload
+  };
 }
+
+// Usage:
+const { passphrase, encrypted } = generatePassphrase();
+// console.log("Plain passphrase:", passphrase);
+// console.log("Encrypted:", encrypted);
+// console.log("Decrypted:", caesarDecrypt(encrypted, 7));
+
 
 // Terminal input handling
 const input = document.getElementById('command-input');
@@ -1434,14 +1582,12 @@ input.addEventListener('keydown', (e) => {
     }
 });
 
-function processCommand(commandStr) {
-    // Display the command
+async function processCommand(commandStr) {
     const commandDiv = document.createElement('div');
     commandDiv.className = 'prompt';
     commandDiv.textContent = commandStr;
     outputContainer.appendChild(commandDiv);
 
-    // Parse and execute
     const parts = commandStr.split(' ');
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
@@ -1450,7 +1596,7 @@ function processCommand(commandStr) {
     outputDiv.className = 'output';
 
     if (commands[cmd]) {
-        const result = commands[cmd](args);
+        const result = await commands[cmd](args);
         outputDiv.innerHTML = result;
     } else {
         outputDiv.innerHTML = `<span class="error">Command not found: ${cmd}</span>
@@ -1459,19 +1605,15 @@ Type 'help' for available commands.`;
 
     outputContainer.appendChild(outputDiv);
     
-    // Scroll to bottom
     const terminal = document.getElementById('terminal');
     terminal.scrollTop = terminal.scrollHeight;
 }
 
-// Auto-focus input
 document.addEventListener('click', () => {
     input.focus();
 });
 
-// Initialize - load filesystem then setup console
 loadFileSystem().then(() => {
-    // Console Easter Egg
     console.log('%c🔮 VEDAIA Developer Terminal', 'color: #00ff00; font-size: 20px; font-weight: bold;');
     console.log('%cYou found the console! But the real puzzles are in the terminal...', 'color: #00aa00;');
     console.log('%cHint: The hex values in the files are important.', 'color: #006600;');
