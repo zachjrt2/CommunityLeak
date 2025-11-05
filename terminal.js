@@ -1472,7 +1472,7 @@ document.addEventListener('click', () => {
 // Initialize - load filesystem then setup console
 loadFileSystem().then(() => {
     // Console Easter Egg
-    console.log('%c🔮 AIA Developer Terminal', 'color: #00ff00; font-size: 20px; font-weight: bold;');
+    console.log('%c🔮 VEDAIA Developer Terminal', 'color: #00ff00; font-size: 20px; font-weight: bold;');
     console.log('%cYou found the console! But the real puzzles are in the terminal...', 'color: #00aa00;');
     console.log('%cHint: The hex values in the files are important.', 'color: #006600;');
     console.log('%cHint: Patterns exist across multiple files.', 'color: #006600;');
